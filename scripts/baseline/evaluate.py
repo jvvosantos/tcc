@@ -5,9 +5,9 @@ Loads results from an NLI or zero-shot run and computes per-defect
 and macro-average Precision, Recall, and F1 score.
 
 Usage:
-  python scripts/evaluate.py                        # defaults to results_nli.json
-  python scripts/evaluate.py data/results_nli.json
-  python scripts/evaluate.py data/results_zeroshot.json
+  python scripts/baseline/evaluate.py
+  python scripts/baseline/evaluate.py data/results_nli.json
+  python scripts/baseline/evaluate.py results/nli/baseline/results_nli.json
 
 Prediction mapping (see MEMORY.md):
   ENTAILMENT            → predicted positive
@@ -18,7 +18,7 @@ import json
 import os
 import sys
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
+DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data")
 DEFAULT_RESULTS = os.path.join(DATA_DIR, "results_nli.json")
 
 DEFECT_TYPES = ["ambiguous", "non_measurable", "optional"]

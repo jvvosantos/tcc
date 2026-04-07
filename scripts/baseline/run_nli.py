@@ -15,7 +15,8 @@ import json
 import os
 from transformers import pipeline
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
+# Repo root: scripts/baseline -> ../..
+DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data")
 DATASET_PATH = os.path.join(DATA_DIR, "dataset.json")
 RESULTS_PATH = os.path.join(DATA_DIR, "results_nli.json")
 
