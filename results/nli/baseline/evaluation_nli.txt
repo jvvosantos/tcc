@@ -1,0 +1,27 @@
+Evaluating: results_nli.json
+Loaded 30 results.
+
+==================================================
+Defect: ambiguous
+  Precision: 0.0
+  Recall:    0.0
+  F1:        0.0
+  (TP=0  FP=0  FN=13  TN=17)
+--------------------------------------------------
+Defect: non_measurable
+  Precision: 0.0
+  Recall:    0.0
+  F1:        0.0
+  (TP=0  FP=0  FN=12  TN=18)
+--------------------------------------------------
+Defect: optional
+  Precision: 1.0
+  Recall:    0.125
+  F1:        0.2222
+  (TP=1  FP=0  FN=7  TN=22)
+--------------------------------------------------
+MACRO AVERAGE
+  Precision: 0.3333
+  Recall:    0.0417
+  F1:        0.0741
+==================================================

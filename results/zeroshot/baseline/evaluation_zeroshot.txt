@@ -1,0 +1,27 @@
+Evaluating: results_zeroshot.json
+Loaded 30 results.
+
+==================================================
+Defect: ambiguous
+  Precision: 0.3333
+  Recall:    0.3846
+  F1:        0.3571
+  (TP=5  FP=10  FN=8  TN=7)
+--------------------------------------------------
+Defect: non_measurable
+  Precision: 0.0
+  Recall:    0.0
+  F1:        0.0
+  (TP=0  FP=0  FN=12  TN=18)
+--------------------------------------------------
+Defect: optional
+  Precision: 0.3333
+  Recall:    1.0
+  F1:        0.5
+  (TP=8  FP=16  FN=0  TN=6)
+--------------------------------------------------
+MACRO AVERAGE
+  Precision: 0.2222
+  Recall:    0.4615
+  F1:        0.2857
+==================================================
