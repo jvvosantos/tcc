@@ -99,11 +99,32 @@ IMPROVED_V2 = LabelSet(
     },
 )
 
+IMPROVED_V3 = LabelSet(
+    defects={
+        "vague": (
+            "This requirement is vague because it uses subjective or imprecise language "
+            "such as fast, quick, good, efficient, reliable, user-friendly, intuitive, "
+            "adequate, or large, and does not clearly define exact behavior or measurable criteria."
+        ),
+
+        "optional": (
+            "This requirement is optional only if it uses explicit optional terms such as "
+            "may, might, could, optionally, if necessary, or if appropriate. "
+            "The word should alone is not enough to indicate optionality."
+        ),
+    },
+    thresholds={
+        "vague": 0.45,
+        "optional": 0.70,
+    },
+)
+
 
 LABEL_SETS = {
     "baseline": BASELINE,
     "improved": IMPROVED,
     "improved_v2": IMPROVED_V2,
+    "improved_v3": IMPROVED_V3,
 }
 
 

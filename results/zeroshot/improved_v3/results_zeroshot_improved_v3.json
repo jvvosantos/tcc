@@ -1,0 +1,464 @@
+[
+  {
+    "requirement": "The system should respond quickly to user inputs.",
+    "ground_truth": [
+      "vague"
+    ],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.963
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8906
+      }
+    }
+  },
+  {
+    "requirement": "The application must handle a large number of users.",
+    "ground_truth": [
+      "vague"
+    ],
+    "predictions": {
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.9277
+      },
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8881
+      }
+    }
+  },
+  {
+    "requirement": "The interface should be user-friendly and intuitive.",
+    "ground_truth": [
+      "vague"
+    ],
+    "predictions": {
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8295
+      },
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.7353
+      }
+    }
+  },
+  {
+    "requirement": "The system may send email notifications when an order is placed.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.9348
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8377
+      }
+    }
+  },
+  {
+    "requirement": "The application could allow users to export data in CSV format.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.9279
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8606
+      }
+    }
+  },
+  {
+    "requirement": "Users might be able to customize their dashboard layout.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.9176
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8914
+      }
+    }
+  },
+  {
+    "requirement": "The system shall authenticate users via OAuth 2.0 before granting access to protected resources.",
+    "ground_truth": [],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.9547
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8054
+      }
+    }
+  },
+  {
+    "requirement": "The API shall return a response within 200 milliseconds for 95% of requests under normal load.",
+    "ground_truth": [],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.9247
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8872
+      }
+    }
+  },
+  {
+    "requirement": "The system shall encrypt all stored passwords using bcrypt with a minimum cost factor of 12.",
+    "ground_truth": [],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.917
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.7157
+      }
+    }
+  },
+  {
+    "requirement": "The system should be secure.",
+    "ground_truth": [
+      "vague"
+    ],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8976
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8497
+      }
+    }
+  },
+  {
+    "requirement": "The platform must provide good performance under stress.",
+    "ground_truth": [
+      "vague"
+    ],
+    "predictions": {
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.9166
+      },
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.9085
+      }
+    }
+  },
+  {
+    "requirement": "Data should be processed in a timely manner.",
+    "ground_truth": [
+      "vague"
+    ],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.9394
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8495
+      }
+    }
+  },
+  {
+    "requirement": "The system may optionally support dark mode in the user interface.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8937
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8398
+      }
+    }
+  },
+  {
+    "requirement": "Logging could be enabled for debugging purposes.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.9323
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8933
+      }
+    }
+  },
+  {
+    "requirement": "The system shall log every failed login attempt with timestamp, IP address, and username.",
+    "ground_truth": [],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8732
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.5518
+      }
+    }
+  },
+  {
+    "requirement": "The database shall support up to 10,000 concurrent connections.",
+    "ground_truth": [],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8959
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8103
+      }
+    }
+  },
+  {
+    "requirement": "The system must be easy to maintain.",
+    "ground_truth": [
+      "vague"
+    ],
+    "predictions": {
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.9218
+      },
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8781
+      }
+    }
+  },
+  {
+    "requirement": "Reports should look professional and be generated efficiently.",
+    "ground_truth": [
+      "vague"
+    ],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8946
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.7558
+      }
+    }
+  },
+  {
+    "requirement": "The application should work well on mobile devices.",
+    "ground_truth": [
+      "vague"
+    ],
+    "predictions": {
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.9464
+      },
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8684
+      }
+    }
+  },
+  {
+    "requirement": "The system might allow administrators to override user permissions.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.9629
+      },
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.9324
+      }
+    }
+  },
+  {
+    "requirement": "The backup process could run during off-peak hours.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.9396
+      },
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8995
+      }
+    }
+  },
+  {
+    "requirement": "The application shall display search results within 1 second for queries returning up to 500 records.",
+    "ground_truth": [],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8991
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8614
+      }
+    }
+  },
+  {
+    "requirement": "Each user session shall expire after 30 minutes of inactivity.",
+    "ground_truth": [],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.9134
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.71
+      }
+    }
+  },
+  {
+    "requirement": "The system should ensure adequate data protection.",
+    "ground_truth": [
+      "vague"
+    ],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8828
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.7012
+      }
+    }
+  },
+  {
+    "requirement": "The software needs to be reliable.",
+    "ground_truth": [
+      "vague"
+    ],
+    "predictions": {
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.9102
+      },
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8315
+      }
+    }
+  },
+  {
+    "requirement": "Error messages should be clear and helpful to the user.",
+    "ground_truth": [
+      "vague"
+    ],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8993
+      },
+      "vague": {
+        "label": "NEUTRAL",
+        "score": 0.2596
+      }
+    }
+  },
+  {
+    "requirement": "The system may provide an optional two-factor authentication mechanism.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.863
+      },
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8261
+      }
+    }
+  },
+  {
+    "requirement": "The system shall reject any uploaded file exceeding 10 MB and return error code 413.",
+    "ground_truth": [],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.8658
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8005
+      }
+    }
+  },
+  {
+    "requirement": "The API shall use TLS 1.2 or higher for all external communications.",
+    "ground_truth": [],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.9095
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.8484
+      }
+    }
+  },
+  {
+    "requirement": "The notification module should deliver messages reasonably fast.",
+    "ground_truth": [
+      "vague"
+    ],
+    "predictions": {
+      "optional": {
+        "label": "ENTAILMENT",
+        "score": 0.9385
+      },
+      "vague": {
+        "label": "ENTAILMENT",
+        "score": 0.889
+      }
+    }
+  }
+]

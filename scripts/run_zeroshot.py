@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.abspath(ROOT_DIR))
 
 from scripts.lib import inference, io, labels  # noqa: E402
 
-DATASET_PATH = os.path.join(ROOT_DIR, "data", "dataset.json")
+DATASET_PATH = os.path.join(ROOT_DIR, "data", "dataset_v2.json")
 DEFAULT_MODEL = "facebook/bart-large-mnli"
 
 

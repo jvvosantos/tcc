@@ -18,26 +18,44 @@ ao final, e o **estado atual** no topo é atualizado.
 
 | Método | Modelo | Status |
 |---|---|---|
-| NLI (entailment) | `roberta-large-mnli` | Avaliado em 3 variantes — saturado, F1 ≈ 0 |
-| Zero-shot classification | `facebook/bart-large-mnli` | Avaliado em 3 variantes + threshold tuning — único caminho com sinal |
+| NLI (entailment) | `roberta-large-mnli` | Avaliado em 4 variantes — **saturado**, F1 ≈ 0 em todas |
+| Zero-shot classification | `facebook/bart-large-mnli` | Avaliado em 4 variantes + threshold tuning — único caminho com sinal, mas **com teto** |
 | Local LLM (instrucional) | — | Não iniciado / próximo grande passo |
+
+### Esquemas de rótulos avaliados
+
+| Esquema | Defeitos | Dataset | Justificativa |
+|---|---|---|---|
+| 3-classes | `ambiguous`, `non_measurable`, `optional` | `data/dataset.json` | Esquema original |
+| 2-classes (fundido) | `vague`, `optional` | `data/dataset_v2.json` | `ambiguous + non_measurable → vague` para resolver colinearidade do dataset (M7) |
 
 ### Macro F1 por experimento (consolidado)
 
-| # | Experimento | NLI macro F1 | Zero-shot macro F1 |
-|---|---|---|---|
-| 1 | Baseline labels (threshold 0.5 fixo) | **0.074** | **0.286** |
-| 2 | Improved labels (threshold 0.5 fixo) | **0.000** | **0.322** |
-| 3 | Improved labels + threshold tuning per-defeito | n/a | **0.4405** |
-| 4 | Improved_v2 labels + threshold por defeito (0.75/0.30/0.70) | **0.000** | **0.190** |
+| # | Experimento | Esquema | NLI macro F1 | Zero-shot macro F1 |
+|---|---|---|---|---|
+| 1 | Baseline labels (threshold 0.5 fixo) | 3-classes | **0.074** | **0.286** |
+| 2 | Improved labels (threshold 0.5 fixo) | 3-classes | **0.000** | **0.322** |
+| 3 | Improved labels + threshold tuning per-defeito | 3-classes | n/a | **0.4405** |
+| 4 | Improved_v2 labels + threshold por defeito (0.75/0.30/0.70) | 3-classes | **0.000** | **0.190** |
+| 5 | Improved_v3 labels + threshold por defeito (0.45/0.70) | **2-classes** | **0.000** | **0.4962** ⚠️ |
 
-### F1 por defeito — melhor configuração até agora
+> ⚠️ A macro F1 do experimento 5 é **enganosamente boa**: subiu vs improved_v2 só
+> porque a média agora é sobre 2 defeitos em vez de 3. Olhando counts crus, o
+> modelo prediz **ENTAILMENT para tudo** (TN=0 em ambos os defeitos). Ver M7.
 
-| Defeito | Melhor F1 | Configuração | Comentário |
-|---|---|---|---|
-| `optional` | **0.75** | zero-shot improved + tuning, t=0.6 | Pistas lexicais explícitas (may, could, might) — método funciona |
-| `ambiguous` | **0.571** | zero-shot improved + tuning, t=0.3 | Recall alto (0.92), mas precision baixa (0.41) — muitos FP |
-| `non_measurable` | **0.000** | em todas as configurações | Score bruto colapsado, não cruza nenhum threshold realista |
+### F1 por defeito — melhor configuração honesta até agora
+
+| Defeito | Melhor F1 | Configuração | TN | Comentário |
+|---|---|---|---|---|
+| `optional` (3-cls) | **0.75** | zero-shot improved + tuning, t=0.6 | 20/22 | **Resultado real** — separa positivo de negativo |
+| `ambiguous` (3-cls) | **0.571** | zero-shot improved + tuning, t=0.3 | 0/17 | F1 alto mas TN=0 — modelo não rejeita nada |
+| `non_measurable` (3-cls) | **0.000** | qualquer configuração | n/a | Score bruto colapsado, hipótese negada não acende BART |
+| `vague` (2-cls) | **0.571** | zero-shot improved_v3, t=0.45 | 0/17 | F1 alto mas TN=0 — hipótese virou catch-all |
+| `optional` (2-cls) | **0.421** | zero-shot improved_v3, t=0.70 | 0/22 | F1 caiu vs 3-cls — hipótese listou tokens, virou caça-palavras |
+
+> **Único defeito com sinal real e separação útil até hoje:** `optional` no
+> esquema 3-classes com hipótese improved + threshold 0.6. Os demais ou têm
+> F1 zero, ou têm F1 numericamente decente mas com TN=0.
 
 ---
 
@@ -169,6 +187,60 @@ Resultados:
 Aprendizado: confirmou-se que NLI saturou e que reformular hipótese
 **sozinho** não é suficiente. Resultado científico válido, não fracasso.
 
+### M7 — Iteração 5: dataset_v2 (esquema fundido) + Improved_v3 labels
+
+**Mudança de esquema de rótulos (Caminho A do diagnóstico anterior):**
+fundimos `ambiguous + non_measurable` em um único rótulo `vague`, atacando o
+problema da colinearidade detectado em M6.
+
+Novo dataset `data/dataset_v2.json`:
+- 13 com `vague` (12 ex-`ambiguous+non_measurable` + 1 ex-`ambiguous` puro)
+- 8 com `optional`
+- 9 sem defeito (clean)
+- Esquema final: 2 defeitos detectáveis + classe implícita "clean"
+
+> Bug de transição corrigido nesta iteração: havia 1 amostra com leftover
+> `["ambiguous"]` no `dataset_v2.json` que nunca seria detectada (não existe
+> mais esse rótulo no esquema). Re-rotulada para `["vague"]`, totalizando 13
+> positivos para `vague`.
+
+Hipóteses (`labels.py` → `IMPROVED_V3`):
+
+- vague → "...vague because it uses subjective or imprecise language such as
+  fast, quick, good, efficient, reliable, user-friendly, intuitive, adequate,
+  or large, **and does not clearly define exact behavior or measurable
+  criteria**."
+- optional → "...optional only if it uses explicit optional terms such as may,
+  might, could, optionally, if necessary, or if appropriate. **The word should
+  alone is not enough to indicate optionality.**"
+
+Thresholds embutidos: `{vague: 0.45, optional: 0.70}`.
+
+**Resultados:**
+
+| Modelo | Defeito | TP | FP | FN | TN | P | R | F1 |
+|---|---|---|---|---|---|---|---|---|
+| NLI v3 | vague | 0 | 0 | 13 | 17 | 0.000 | 0.000 | **0.000** |
+| NLI v3 | optional | 0 | 0 | 8 | 22 | 0.000 | 0.000 | **0.000** |
+| Zero-shot v3 | vague | 12 | 17 | 1 | **0** | 0.414 | 0.923 | **0.571** |
+| Zero-shot v3 | optional | 8 | 22 | 0 | **0** | 0.267 | 1.000 | **0.421** |
+
+NLI: 30/30 NEUTRAL em ambos os defeitos (4ª iteração consecutiva sem reação).
+
+Zero-shot: virou um classificador "sim para tudo".
+- `vague`: 29/30 ENTAILMENT, score médio 0.824, threshold 0.45 → quase nada cai.
+- `optional`: 30/30 ENTAILMENT, score mínimo 0.735, threshold 0.70 → tudo cai.
+- **TN = 0 em ambos os defeitos** — o modelo não rejeitou nenhum requisito clean.
+
+Aprendizado: dois failure modes novos do zero-shot, ambos detalhados na
+seção **Diagnóstico** abaixo:
+1. Hipótese de `vague` virou catch-all semântico.
+2. Hipótese de `optional` virou caça-palavras léxico.
+
+A macro F1 (0.4962) parece a melhor de todas, mas isso é artefato de
+**média sobre 2 defeitos em vez de 3**. Em termos de utilidade prática, M7
+é um regresso vs M4 (threshold tuning, 0.4405 com TN saudável em `optional`).
+
 ---
 
 ## Diagnóstico (consolidado, 2026-04-29)
@@ -263,44 +335,142 @@ Três hipóteses (não excludentes) para o colapso desse defeito:
    limites, percentuais). NLI/zero-shot extraem evidência **presente** no
    texto, não ausência.
 
+### 6. Failure modes do zero-shot expostos pela v3
+
+A iteração v3 (M7) revelou **dois modos de falha distintos** do zero-shot
+NLI que valem ouro pra discussão da TCC:
+
+#### 6.1 Catch-all hypothesis — quando a hipótese é ampla demais
+
+A hipótese de `vague` em v3 termina com:
+
+> "...and does not clearly define exact behavior or measurable criteria."
+
+Esse pedaço final é semanticamente quase universal: praticamente qualquer
+requisito em linguagem natural pode ser lido como "não definindo
+exatamente o comportamento". Resultado:
+
+- Score médio para `vague` em todos os 30 itens = **0.824**.
+- Requisito clean "Each user session shall expire after 30 minutes of
+  inactivity." (perfeitamente mensurável) recebeu score 0.710 para `vague`.
+- O modelo retorna ENTAILMENT para 29/30 itens (TN = 0/17).
+
+**Insight científico:** hipóteses que terminam em cláusulas semanticamente
+amplas viram **catch-all** — o modelo dispara entailment para o pedaço
+genérico, não para a condição específica que queremos detectar. A v2 caiu no
+extremo oposto (hipótese estreita demais, scores no chão); a v3 atravessou o
+ponto ótimo.
+
+#### 6.2 Lexical pattern matching — quando a hipótese lista tokens
+
+A hipótese de `optional` em v3 cita explicitamente:
+
+> "...explicit optional terms such as **may, might, could, optionally, if
+> necessary, or if appropriate**."
+
+E inclui uma meta-instrução:
+
+> "**The word should alone is not enough** to indicate optionality."
+
+Resultado: o BART pontuou ENTAILMENT para 30/30 itens, com score mínimo de
+0.735 (todos acima do threshold 0.70).
+
+Inspeção dos scores mostra dois padrões:
+
+- Requisitos que contêm tokens "shall", "should", "may", "could" (= todos)
+  recebem scores altos (0.83-0.96) **independentemente de serem optional ou
+  não**.
+- Requisitos genuinamente optional não pontuam mais alto que requisitos
+  clean: `"The system may provide an optional two-factor authentication
+  mechanism"` = 0.826 vs `"The system shall authenticate users via OAuth
+  2.0"` = 0.955.
+
+**Dois insights científicos:**
+
+1. **Listar tokens-gatilho na hipótese induz pattern matching léxico.** O
+   BART não está extraindo a semântica de opcionalidade — está medindo a
+   sobreposição lexical entre hipótese e premissa. Como toda hipótese da
+   forma "...such as X, Y, Z" tem alta sobreposição com qualquer requisito
+   contendo verbos modais, o modelo perde a capacidade de discriminar.
+
+2. **NLI zero-shot não segue meta-instruções.** A cláusula "the word should
+   alone is not enough" não é executável pelo modelo — ele não é
+   instruction-tuned. Para o BART, essa frase é apenas mais texto, e
+   provavelmente *piora* o resultado por reforçar o token "should" no
+   contexto da hipótese.
+
+#### 6.3 Frase-âncora para a TCC
+
+> "Zero-shot NLI hypotheses live on a Goldilocks zone: too narrow and
+> scores collapse to zero (M6/v2); too broad and scores saturate to one
+> (M7/v3). Hypothesis verbalization that lists trigger tokens degenerates
+> into lexical pattern matching, while meta-instructional clauses are
+> ignored entirely. This bounds the achievable performance of zero-shot NLI
+> for requirement defect detection regardless of dataset relabeling."
+
 ---
 
 ## Próximos passos (em ordem de prioridade)
 
+### Prioridade 0 — Higiene técnica antes da próxima rodada
+
+Bugs detectados durante M7 que precisam ser corrigidos para qualquer
+experimento futuro com esquemas != 3-classes:
+
+- [ ] **`DEFECT_TYPES` desatualizado em `scripts/lib/labels.py`**: ainda é
+      `["ambiguous", "non_measurable", "optional"]`. `print_evaluation()` e
+      `print_comparison()` usam ele como default → quebram com `KeyError` em
+      cima de resultados v3 (que têm chaves `vague`, `optional`).
+      Sugestão: tornar dinâmico (`label_set.defects.keys()`) ou aceitar
+      `defect_types` explicitamente em todos os runners.
+- [x] **Leftover `["ambiguous"]` em `data/dataset_v2.json`**: corrigido em
+      M7 — re-rotulado para `["vague"]`. Total de positivos para `vague`
+      passou de 12 → 13.
+
 ### Prioridade 1 — Encerrar a frente de NLI puro
 
 - [ ] Documentar formalmente em `@ai/MEMORY.md` ("Important insight") que
-      NLI zero-shot puro foi avaliado e descartado, com 3 variantes como
-      evidência.
-- [ ] Não rodar mais iterações de label verbalization no `roberta-large-mnli`.
+      NLI zero-shot puro foi avaliado e descartado, com **4 variantes** como
+      evidência (baseline, improved, improved_v2, improved_v3).
+- [x] Não rodar mais iterações de label verbalization no `roberta-large-mnli`
+      a partir daqui.
 
 ### Prioridade 2 — Decidir o que fazer com o dataset
 
-Duas alternativas, ambas defensáveis:
+- [x] **Caminho A executado em M7**: fundimos `ambiguous + non_measurable` em
+      `vague` (`data/dataset_v2.json`). Resolveu a colinearidade — agora
+      cada amostra tem 0 ou 1 defeito detectável.
+- [ ] **Avaliar se vale também dobrar o dataset**: 30 amostras é muito pouco
+      para conclusões robustas. Cada flip de 1 amostra muda F1 em ~0.04. Se
+      formos comparar com LLM local, dataset de ~60-100 amostras dá mais
+      confiança estatística.
 
-**Caminho A — Fundir `ambiguous + non_measurable` em `vague`** (mais simples):
-- Vira esquema de 3 classes: `vague`, `optional`, `clean`.
-- Resolve a colinearidade de uma só vez.
-- Justificativa acadêmica: non-measurability **é** uma forma de vagueza
-  quantitativa.
-- Retrofit: re-rotular `data/dataset.json` e re-rodar todos os experimentos
-  com `LABEL_SETS` adaptados.
+### Prioridade 3 — Fechar zero-shot com uma v4 cirúrgica
 
-**Caminho B — Manter separado, mas reparar o dataset** (mais trabalho, mais
-acadêmico):
-- Adicionar exemplos com `ambiguous` sem `non_measurable` (ex: "the report
-  must be generated **in 5 minutes** but **look professional**" — tem métrica,
-  tem palavra vaga).
-- Adicionar exemplos com `non_measurable` sem `ambiguous` (ex: "the system
-  shall be **easy to use**" — vago mas sem sobreposição forte? difícil
-  separar de fato).
-- Honestamente, separar de verdade é difícil porque os dois conceitos se
-  encavalam.
+Antes de pular para LLM local, vale **uma última iteração** para
+confirmar/refutar os failure modes do M7. Hipóteses curtas, sem listar
+tokens, sem catch-all final:
 
-> **Recomendação atual:** Caminho A. É mais limpo, é mais defensável e libera
-> tempo para a Prioridade 3.
+```python
+IMPROVED_V4 = LabelSet(
+    defects={
+        "vague": "This requirement uses subjective wording that different "
+                 "readers would interpret differently.",
+        "optional": "This requirement describes optional or non-mandatory "
+                    "behavior that the system may or may not implement.",
+    },
+    thresholds={"vague": 0.5, "optional": 0.5},  # depois calibrar via tuning
+)
+```
 
-### Prioridade 3 — Adicionar um terceiro método
+- [ ] Rodar `python scripts/run_zeroshot.py --labels improved_v4`.
+- [ ] Rodar `python scripts/run_threshold_tuning.py --labels improved_v4
+      --thresholds 0.3 0.4 0.5 0.6 0.7 0.8 0.9`.
+- [ ] Hipótese a testar: hipóteses **abstratas curtas** evitam tanto o
+      collapse (v2) quanto a saturação (v3). Se F1 ficar abaixo de M4
+      (0.4405), confirma o teto do método.
+
+### Prioridade 4 — Adicionar um terceiro método
 
 Aqui é onde o TCC ganha diferencial:
 
@@ -308,29 +478,33 @@ Aqui é onde o TCC ganha diferencial:
 - Regex de palavras-gatilho por defeito.
 - Vira o "baseline simples" contra o qual modelos têm que ganhar.
 - Útil para mostrar que NLI/zero-shot ganha (ou não ganha) de uma abordagem
-  trivial.
+  trivial. Dado o que vimos em M7 sobre `optional` (BART vira pattern
+  matching), suspeita-se que regex pode até **empatar** com zero-shot.
 
 **Opção B — LLM local instrucional** (mais interessante):
 - `Mistral-7B-Instruct`, `Llama-3-8B-Instruct` ou `Phi-3` via Ollama / llama.cpp.
 - Prompt: "Classify this requirement against these defects: ..."
 - Roda local, sem fine-tuning. Encaixa no escopo "Local AI Assistant" do MEMORY.
-- Provavelmente supera zero-shot puro em tarefas semânticas.
+- Provavelmente supera zero-shot puro em tarefas semânticas, **e** consegue
+  seguir meta-instruções (limitação clara do BART exposta em M7).
 
-> **Recomendação atual:** B. É o que diferencia o TCC e está alinhado com o
-> título do trabalho ("Local AI Assistant").
+> **Recomendação atual:** ambas, em ordem A → B. O rule-based dá um piso de
+> comparação honesto e leva 1-2h para implementar. O LLM local é o
+> diferencial real do TCC.
 
-### Prioridade 4 — Threshold tuning no improved_v2
+### Prioridade 5 — Threshold tuning no improved_v2 e improved_v3
 
 - [ ] `python scripts/run_threshold_tuning.py --labels improved_v2 --thresholds 0.05 0.1 0.15 0.2 0.3 0.4 0.5 0.6 0.7 0.8`
-- Pelo perfil de scores brutos analisado (`non_measurable` max 0.337), o
-  ganho esperado é pequeno — mas vale fechar a iteração com dado completo
-  antes de descartar.
+- [ ] `python scripts/run_threshold_tuning.py --labels improved_v3 --thresholds 0.5 0.6 0.7 0.75 0.8 0.85 0.9 0.92 0.95`
+- Pelo perfil de scores em ambos, o ganho esperado é modesto. Mas vale
+  fechar com dado completo antes de declarar o ceiling do zero-shot.
 
-### Prioridade 5 — Análise qualitativa de erros
+### Prioridade 6 — Análise qualitativa de erros
 
 Para a TCC ficar mais rica:
 
-- [ ] Listar manualmente os 5-10 piores FP e FN do zero-shot improved + tuning.
+- [ ] Listar manualmente os 5-10 piores FP e FN do zero-shot improved + tuning
+      (M4) — a melhor configuração honesta até hoje.
 - [ ] Categorizar: erro do modelo? erro do rótulo? requisito ambíguo de fato?
 - [ ] Material direto para a seção de Discussão.
 
@@ -356,3 +530,10 @@ Quando uma iteração terminar:
 - **2026-04-29** — Criado arquivo. Cobertura retroativa de M0–M6
   (setup → dataset → baseline → improved → threshold tuning → refactor →
   improved_v2). Diagnóstico consolidado pós-v2.
+- **2026-04-29** — Adicionado M7 (Iteração 5): mudança de esquema para
+  `vague + optional` no `dataset_v2.json` e nova `LabelSet` `IMPROVED_V3`.
+  NLI segue morto (4ª variante). Zero-shot virou "sim para tudo" (TN=0 em
+  ambos os defeitos). Estendido o Diagnóstico com dois novos failure modes:
+  catch-all hypothesis e lexical pattern matching. Adicionada Prioridade 0
+  (higiene técnica) com bug do `DEFECT_TYPES` e Prioridade 3 com proposta
+  de `improved_v4` cirúrgica para fechar a frente de zero-shot.
