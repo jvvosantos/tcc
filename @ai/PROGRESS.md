@@ -16,11 +16,12 @@ ao final, e o **estado atual** no topo é atualizado.
 
 ### Métodos avaliados
 
-| Método | Modelo | Status |
+| Método | Modelo / artefato | Status |
 |---|---|---|
 | NLI (entailment) | `roberta-large-mnli` | Avaliado em **6 variantes** — F1 macro ≈ 0 em todas. **Frente encerrada.** |
 | Zero-shot classification | `facebook/bart-large-mnli` | Avaliado em 5 variantes + 2 rodadas de threshold tuning. Teto confirmado (`vague` F1≈0.65, `optional` F1≤0.75). |
-| Local LLM (instrucional) | — | Não iniciado — **próximo grande passo do TCC**. |
+| **Rule-based (lexicon)** | regex word-boundary, ~21 termos | Avaliado em 1 variante. **Macro F1 = 0.958** (vague 0.917 / optional 1.000). **Supera BART por +0.6.** |
+| Local LLM (instrucional) | — | Não iniciado — única frente capaz de superar o regex em vagueza conceitual. |
 
 ### Esquemas de rótulos avaliados
 
@@ -40,6 +41,7 @@ ao final, e o **estado atual** no topo é atualizado.
 | 5 | Improved_v3 labels + threshold por defeito (0.45/0.70) | **2-classes** | **0.000** | **0.4962** ⚠️ |
 | 6 | Improved_v4 labels + threshold por defeito (0.65/0.75) | 2-classes | **0.000** | **0.000** ⚠️ |
 | 7 | Improved_v4 + threshold tuning + Improved_v5 (0.4/0.3) | 2-classes | **0.000** | **0.3236** ✅ |
+| 8 | **Rule-based** (regex lexicon, 15+6 termos) | 2-classes | n/a | **0.9584** 🏆 |
 
 > ⚠️ **Exp. 5:** macro F1 enganosamente alta — média sobre 2 defeitos (vs 3) com
 > TN=0 em ambos. Ver M7.
@@ -51,13 +53,20 @@ ao final, e o **estado atual** no topo é atualizado.
 > `vague` F1=**0.647** com TN=7 (separação real); `optional` F1=0 (irrecuperável
 > com a hipótese v4). Macro 0.324 < M4 (0.4405) mas o melhor `vague`
 > empiricamente confirmado. Ver M9.
+>
+> 🏆 **Exp. 8 (rule-based):** macro F1=**0.9584**, com `optional` em F1 perfeito
+> (1.000) e `vague` F1=0.917 (P=1.0, R=0.846). Supera o melhor zero-shot por
+> +0.518. Os 2 únicos FN são casos de **vagueza conceitual** (`"secure"`,
+> `"timely manner"`) — exatamente onde um LLM com semântica seria útil. Ver M10.
 
 ### F1 por defeito — melhor configuração honesta até agora
 
 | Defeito | Melhor F1 real | Configuração | TN | Comentário |
 |---|---|---|---|---|
-| `optional` (3-cls) | **0.750** | zero-shot improved + tuning, t=0.6 | 20/22 | **Melhor resultado do projeto** — separa positivo de negativo |
-| `vague` (2-cls) | **0.647** ★ | zero-shot improved_v4 + tuning, t=0.4 (improved_v5) | 7/17 | F1 confirmado por tuning. **Melhor `vague` da pesquisa.** |
+| `optional` (2-cls) | **1.000** 🏆 | rule-based (regex lexicon) | 22/22 | **Resultado perfeito** — token-level signal. Ver M10. |
+| `vague` (2-cls) | **0.917** 🏆 | rule-based (regex lexicon) | 17/17 | P=1.0, R=0.846. 2 FN são vagueza conceitual sem trigger word. Ver M10. |
+| `optional` (3-cls) | 0.750 | zero-shot improved + tuning, t=0.6 | 20/22 | Melhor resultado *do BART* (3-classes) |
+| `vague` (2-cls) | 0.647 ★ | zero-shot improved_v4 + tuning, t=0.4 (improved_v5) | 7/17 | Melhor `vague` *do BART*, confirmado por tuning |
 | `ambiguous` (3-cls) | 0.571 | zero-shot improved + tuning, t=0.3 | 0/17 | F1 alto mas TN=0 — modelo não rejeita nada |
 | `vague` (2-cls) | 0.571 | zero-shot improved_v3, t=0.45 | 0/17 | F1 alto mas TN=0 — hipótese catch-all |
 | `non_measurable` (3-cls) | **0.000** | qualquer configuração | n/a | Score bruto colapsado; eliminado pela fusão em `vague` |
@@ -67,11 +76,12 @@ ao final, e o **estado atual** no topo é atualizado.
 > de M9 confirmou o ótimo em t=0.4 com F1=**0.647** (TP=11, FP=10, FN=2, TN=7).
 > Pequena correção numérica, mesma conclusão.
 
-> **Situação atual:** dois defeitos têm separação útil **confirmada por tuning**:
-> `optional` no esquema 3-classes (M4, F1=0.75) e `vague` no v4/v5 (M9,
-> F1=0.647). Os tetos do BART zero-shot estão definidos e não devem subir mais
-> com reformulação de hipóteses (ver Diagnóstico §6). Próxima fronteira é
-> trocar de método (rule-based ou LLM local), não de hipótese.
+> **Situação atual:** o **rule-based domina** o leaderboard em ambos os
+> defeitos. Os tetos do BART zero-shot ficaram bem abaixo da regex em ambos
+> (`optional`: 1.000 vs 0.750; `vague`: 0.917 vs 0.647). Os 2 únicos FN do
+> regex são vagueza conceitual sem trigger word — **exatamente o nicho onde
+> um LLM local com compreensão semântica poderia agregar valor**. Caso
+> contrário, regex já satura o problema com 30 amostras.
 
 ---
 
@@ -488,6 +498,149 @@ Os dois primeiros estão **calibrados e prontos para a tabela final do TCC**.
 > a defect whose ranking is non-discriminative — a property of the
 > verbalization, not of the dataset."
 
+### M10 — Iteração 8: Rule-based baseline (regex lexicon)
+
+**Hipótese de trabalho:** se o BART zero-shot estava degenerando para
+*lexical pattern matching* (M7, §6.2 do Diagnóstico), então uma regex
+honesta sobre os mesmos tokens-gatilho deveria competir — e talvez vencer
+— sem custo computacional. Implementação ~30 linhas, 0 modelos.
+
+**Artefato:** `scripts/lib/rules.py` + `RULES_V1` em `labels.py` +
+runners (`scripts/run_rules.py`, `scripts/rules/run_rules_v1.py`).
+Mesmo formato de saída JSON dos métodos NLI/zero-shot
+(`predictions[defect].label ∈ {ENTAILMENT, NEUTRAL}`), com `score` =
+fração de termos do lexicon que casaram e `matched_terms` para análise
+qualitativa. Casamento é regex word-boundary (`\bterm\b`,
+case-insensitive), o que evita falsos positivos do tipo `"may"` em
+`"Mayflower"`.
+
+**Lexicons (`RULES_V1.terms`):**
+
+```python
+vague:    quickly, fast, good, large, easy, reliable, adequate, professional,
+          efficient, user-friendly, intuitive, clear, helpful, well, reasonable
+optional: may, might, could, optionally, if necessary, if appropriate
+```
+
+15 termos para `vague`, 6 para `optional`. Todos extraídos manualmente
+das hipóteses verbalizadas das iterações v2-v5.
+
+**Resultados sobre `data/dataset_v2.json` (30 amostras):**
+
+| Defeito | TP | FP | FN | TN | P | R | F1 |
+|---|---|---|---|---|---|---|---|
+| vague | 11 | 0 | 2 | 17 | **1.000** | 0.846 | **0.9167** |
+| optional | 8 | 0 | 0 | 22 | **1.000** | **1.000** | **1.0000** |
+| **Macro** | | | | | **1.000** | **0.9231** | **0.9584** |
+
+**Comparativo direto com o melhor zero-shot:**
+
+| Defeito | Rule-based F1 | BART zero-shot F1 (melhor honesto) | Δ |
+|---|---|---|---|
+| optional | **1.000** | 0.750 (M4, 3-classes) | +0.250 |
+| vague | **0.917** | 0.647 (M9/v5, 2-classes) | +0.270 |
+| Macro | **0.958** | 0.4405 (M4) / 0.324 (M9) | +0.518 / +0.634 |
+
+**Análise dos 2 únicos FN (`vague`):**
+
+Os requisitos que escaparam do regex foram:
+
+1. `"The system should be secure."`
+2. `"Data should be processed in a timely manner."`
+
+Nenhum dos 15 termos de `vague` aparece nessas frases — `secure`,
+`timely manner` e `processed` são vagos **conceitualmente** mas não
+estão no lexicon. Para verificar se eles são detectáveis por um modelo
+com compreensão semântica, conferimos como o BART zero-shot v5 pontuou
+esses dois itens:
+
+| Requisito | BART v5 — score `vague` | Label v5 (t=0.4) |
+|---|---|---|
+| `"The system should be secure."` | 0.4395 | ENTAILMENT ✓ |
+| `"Data should be processed in a timely manner."` | 0.5891 | ENTAILMENT ✓ |
+
+**O BART acerta justamente os 2 itens onde o regex falha.** Há sinal
+**complementar** entre os dois métodos. Um ensemble simples (regex OR
+BART) capturaria 13/13 positivos de `vague`, mas o BART carrega 10 FP
+do v5; o ensemble teria P=13/23=0.565 e R=1.0, dando F1=0.722 — pior
+que o regex sozinho. Em termos de utilidade prática, **o regex
+domina sozinho**; o BART agrega valor apenas em uma fatia muito estreita
+do espectro de erros.
+
+**Inspeção dos 0 FP:**
+
+Nenhum dos 17 itens *clean* recebeu um match falso para `vague` ou
+`optional`. Em particular, `"The system shall encrypt all stored
+passwords using bcrypt with a minimum cost factor of 12"` não tem
+nenhum trigger word — bcrypt é específico, "minimum cost factor of 12"
+é mensurável. O lexicon foi calibrado bem o suficiente para não
+produzir overshooting.
+
+**Análise do dataset (esse é o ponto crítico):**
+
+Não há como evitar a observação: **o problema, como definido em
+`dataset_v2.json` com 30 amostras manualmente curadas, é majoritariamente
+um problema lexical**. Para `optional` (token-level explícito) é
+evidente. Para `vague`, 11 dos 13 positivos contêm uma palavra-gatilho
+óbvia. Isso reflete (a) o design do dataset, que ancorou a definição
+operacional de cada defeito em palavras concretas, e (b) o fato de
+`dataset_v2.json` ter sido construído antes mesmo da v3, com termos
+muito alinhados aos das hipóteses iniciais — viés de construção a
+favor da regex.
+
+Esse é um **resultado científico forte**, mas precisa ser apresentado
+com nuances:
+
+1. **Para *este* dataset**, a regex satura o problema. Modelos
+   neurais zero-shot são ineficientes nesse regime.
+2. **Para problemas reais** de detecção de defeitos em RE, o regex
+   provavelmente não generalize: requisitos no campo usam um vocabulário
+   muito mais amplo e construções negativas / implícitas que escapam
+   ao lexicon. Os 2 FN observados são exatamente uma amostra dessa
+   classe de erro.
+3. **Validade externa do experimento:** este resultado argumenta a
+   favor de um dataset maior e mais diverso para a próxima iteração
+   (e.g., 100+ amostras, com vagueza conceitual sem trigger word
+   representada explicitamente).
+
+**Aprendizado geral de M10:**
+
+1. **A regex venceu o BART por +0.518 em macro F1.** É o resultado mais
+   contraintuitivo do projeto e o que mais fala sobre as escolhas
+   metodológicas de zero-shot NLP em tarefas predominantemente
+   lexicais.
+
+2. **Confirma o diagnóstico do M7/§6.2:** o BART não estava extraindo
+   semântica de opcionalidade ou vagueza — estava medindo sobreposição
+   lexical de forma ineficiente, com ruído. Quando o sinal lexical é
+   isolado e medido diretamente, ele é puro.
+
+3. **Dois FN em vagueza conceitual** definem precisamente o nicho do
+   próximo método: um LLM local (Mistral / Llama) só justifica seu custo
+   se conseguir capturar `"timely manner"` e `"secure"` mantendo a
+   precisão alta. Caso contrário, **um TCC honesto admite que
+   `dataset_v2.json` é bem resolvido por regex**.
+
+4. **Implicação para escrita do TCC:** o experimento rule-based não é
+   apenas um baseline — é o **referencial superior** que os métodos
+   neurais precisam justificar. O capítulo de Resultados deve abrir
+   pelo regex e construir a discussão a partir daí.
+
+---
+
+**Frase-âncora para a TCC:**
+
+> "A 30-line regex baseline using 21 manually curated trigger terms
+> achieved macro F1 = 0.958 (precision = 1.0) on the same dataset where
+> a zero-shot BART-large-MNLI ceiling was empirically established at
+> macro F1 = 0.4405. The two false negatives of the lexical baseline
+> were the only items requiring genuine semantic understanding —
+> `"timely manner"` and `"secure"` — and were detected by BART, evidencing
+> a small but real complementary signal in the neural model. For this
+> dataset, however, the regex saturates the problem, and zero-shot
+> models cannot justify their compute cost on the basis of accuracy
+> alone."
+
 ---
 
 ## Diagnóstico (consolidado, 2026-04-30)
@@ -709,29 +862,35 @@ experimento futuro com esquemas != 3-classes:
       (`{vague: 0.4, optional: 0.3}`) — virou a configuração canônica para
       reprodutibilidade.
 
-### Prioridade 4 — Adicionar um terceiro método ⭐ (próxima frente do TCC)
+### Prioridade 4 — Adicionar um terceiro método ⭐
 
-Com os tetos do BART zero-shot **confirmados empiricamente** (`optional`
-0.75, `vague` 0.647) e a frente de NLI puro encerrada, esta passa a ser
-**a frente ativa** do projeto. É onde o TCC ganha diferencial:
+**Opção A — Rule-based / heurísticas léxicas:**
 
-**Opção A — Rule-based / heurísticas léxicas** (mais simples):
-- Regex de palavras-gatilho por defeito.
-- Vira o "baseline simples" contra o qual modelos têm que ganhar.
-- Útil para mostrar que NLI/zero-shot ganha (ou não ganha) de uma abordagem
-  trivial. Dado o que vimos em M7 sobre `optional` (BART vira pattern
-  matching), suspeita-se que regex pode até **empatar** com zero-shot.
+- [x] **Concluída em M10.** Regex word-boundary + lexicon de 21 termos
+      (15 vague + 6 optional). Macro F1=**0.958** sobre `dataset_v2.json`,
+      superando o BART zero-shot em +0.518. Implementação em
+      `scripts/lib/rules.py`, `LabelSet RULES_V1`, runners
+      `scripts/run_rules.py` e `scripts/rules/run_rules_v1.py`.
+- [x] **Não foi um "baseline contra o qual modelos têm que ganhar" — virou
+      o referencial superior.** O BART nunca chegou perto.
 
-**Opção B — LLM local instrucional** (mais interessante):
+**Opção B — LLM local instrucional** (segue como recomendação principal):
+
 - `Mistral-7B-Instruct`, `Llama-3-8B-Instruct` ou `Phi-3` via Ollama / llama.cpp.
 - Prompt: "Classify this requirement against these defects: ..."
 - Roda local, sem fine-tuning. Encaixa no escopo "Local AI Assistant" do MEMORY.
-- Provavelmente supera zero-shot puro em tarefas semânticas, **e** consegue
-  seguir meta-instruções (limitação clara do BART exposta em M7).
+- **Bar mais alto agora:** precisa não apenas superar o BART (já feito pelo
+  regex) mas chegar perto da regex em precisão **e** capturar os 2 FN de
+  vagueza conceitual (`"secure"`, `"timely manner"`). É o único nicho onde
+  um LLM tem chance estrutural de agregar valor sobre o regex neste dataset.
+- Alternativa mais defensável: usar o LLM em modo **complementar** — apenas
+  quando o regex não dispara (top-1 score = 0). Custo zero em 28/30 itens,
+  decisão neural só nos 2 itens duvidosos.
 
-> **Recomendação atual:** ambas, em ordem A → B. O rule-based dá um piso de
-> comparação honesto e leva 1-2h para implementar. O LLM local é o
-> diferencial real do TCC.
+> **Próximo passo recomendado:** rodar Mistral-7B-Instruct com prompt simples
+> sobre os 30 itens de `dataset_v2.json` antes de mais qualquer coisa. Se
+> ele não pegar `"timely manner"` ou `"secure"`, o caminho é admitir o teto
+> do dataset; se pegar com precisão alta, justifica a integração.
 
 ### Prioridade 5 — Threshold tuning no improved_v2 e improved_v3
 
@@ -802,3 +961,16 @@ Quando uma iteração terminar:
   zero-shot macro F1=0.324 (com TN real); NLI macro F1=0 (6ª variante,
   encerra a frente). Prioridade 1 cumprida; Prioridade 3 cumprida;
   Prioridade 4 (3º método: rule-based / LLM local) virou a frente ativa.
+- **2026-04-30** — Adicionado M10 (Iteração 8): **rule-based baseline**.
+  `LabelSet` ganhou campo opcional `terms: dict | None`. Novo módulo
+  `scripts/lib/rules.py` (regex word-boundary + case-insensitive),
+  `RULES_V1` com 15 termos `vague` + 6 termos `optional`, runners
+  `scripts/run_rules.py` e `scripts/rules/run_rules_v1.py`. Resultado
+  sobre `dataset_v2.json`: **macro F1 = 0.9584** (`optional` perfeito
+  1.000; `vague` 0.917, P=1.0). Supera o melhor BART zero-shot por
+  +0.518. Os 2 únicos FN são vagueza conceitual sem trigger word
+  (`"secure"`, `"timely manner"`) — exatamente os 2 itens que o BART
+  v5 acerta como ENTAILMENT, evidenciando sinal complementar fraco
+  entre regex e modelo neural. **Achado científico mais forte do
+  projeto.** Prioridade 4A cumprida; 4B (LLM local) ganha bar mais
+  alto: precisa cobrir vagueza conceitual sem perder precisão.

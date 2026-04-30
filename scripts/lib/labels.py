@@ -11,6 +11,12 @@ It bundles every parameter that can vary between experiments:
                    uses argmax over ENTAILMENT/NEUTRAL/CONTRADICTION);
                    zero-shot predicts ENTAILMENT when the entailment
                    score is strictly above the defect's threshold.
+- ``terms``      — *(optional)* per-defect list of trigger terms used by
+                   the rule-based runner (``scripts/run_rules.py``).
+                   Single words or short phrases; matched as
+                   case-insensitive whole words (``\\bterm\\b``).
+                   Set to ``None`` for label sets that are NLI/zero-shot
+                   only.
 
 The defect names are defined per ``LabelSet`` (no global constant). The
 runners persist them in the result JSON under ``defect_types`` so that
@@ -47,11 +53,15 @@ class LabelSet:
     thresholds:
         Per-defect decision threshold for zero-shot classification.
         NLI runners ignore this (they use the model's argmax label directly).
+    terms:
+        Optional. Per-defect list of trigger terms for the rule-based
+        runner. ``None`` when this label set is NLI/zero-shot only.
     """
 
     dataset: str
     defects: dict
     thresholds: dict
+    terms: dict = None
 
 
 BASELINE = LabelSet(
@@ -181,6 +191,30 @@ IMPROVED_V5 = LabelSet(
 )
 
 
+RULES_V1 = LabelSet(
+    dataset="data/dataset_v2.json",
+    defects={
+        "vague": "(rule-based) lexical match against subjective quality terms.",
+        "optional": "(rule-based) lexical match against optionality terms.",
+    },
+    thresholds={
+        "vague": 0.0,
+        "optional": 0.0,
+    },
+    terms={
+        "vague": [
+            "quickly", "fast", "good", "large", "easy", "reliable",
+            "adequate", "professional", "efficient", "user-friendly",
+            "intuitive", "clear", "helpful", "well", "reasonable",
+        ],
+        "optional": [
+            "may", "might", "could", "optionally",
+            "if necessary", "if appropriate",
+        ],
+    },
+)
+
+
 LABEL_SETS = {
     "baseline": BASELINE,
     "improved": IMPROVED,
@@ -188,6 +222,7 @@ LABEL_SETS = {
     "improved_v3": IMPROVED_V3,
     "improved_v4": IMPROVED_V4,
     "improved_v5": IMPROVED_V5,
+    "rules_v1": RULES_V1,
 }
 
 

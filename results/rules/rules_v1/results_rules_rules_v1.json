@@ -1,0 +1,571 @@
+{
+  "defect_types": [
+    "vague",
+    "optional"
+  ],
+  "items": [
+    {
+      "requirement": "The system should respond quickly to user inputs.",
+      "ground_truth": [
+        "vague"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "ENTAILMENT",
+          "score": 0.0667,
+          "matched_terms": [
+            "quickly"
+          ]
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The application must handle a large number of users.",
+      "ground_truth": [
+        "vague"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "ENTAILMENT",
+          "score": 0.0667,
+          "matched_terms": [
+            "large"
+          ]
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The interface should be user-friendly and intuitive.",
+      "ground_truth": [
+        "vague"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "ENTAILMENT",
+          "score": 0.1333,
+          "matched_terms": [
+            "user-friendly",
+            "intuitive"
+          ]
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The system may send email notifications when an order is placed.",
+      "ground_truth": [
+        "optional"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.1667,
+          "matched_terms": [
+            "may"
+          ]
+        }
+      }
+    },
+    {
+      "requirement": "The application could allow users to export data in CSV format.",
+      "ground_truth": [
+        "optional"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.1667,
+          "matched_terms": [
+            "could"
+          ]
+        }
+      }
+    },
+    {
+      "requirement": "Users might be able to customize their dashboard layout.",
+      "ground_truth": [
+        "optional"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.1667,
+          "matched_terms": [
+            "might"
+          ]
+        }
+      }
+    },
+    {
+      "requirement": "The system shall authenticate users via OAuth 2.0 before granting access to protected resources.",
+      "ground_truth": [],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The API shall return a response within 200 milliseconds for 95% of requests under normal load.",
+      "ground_truth": [],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The system shall encrypt all stored passwords using bcrypt with a minimum cost factor of 12.",
+      "ground_truth": [],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The system should be secure.",
+      "ground_truth": [
+        "vague"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The platform must provide good performance under stress.",
+      "ground_truth": [
+        "vague"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "ENTAILMENT",
+          "score": 0.0667,
+          "matched_terms": [
+            "good"
+          ]
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "Data should be processed in a timely manner.",
+      "ground_truth": [
+        "vague"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The system may optionally support dark mode in the user interface.",
+      "ground_truth": [
+        "optional"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.3333,
+          "matched_terms": [
+            "may",
+            "optionally"
+          ]
+        }
+      }
+    },
+    {
+      "requirement": "Logging could be enabled for debugging purposes.",
+      "ground_truth": [
+        "optional"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.1667,
+          "matched_terms": [
+            "could"
+          ]
+        }
+      }
+    },
+    {
+      "requirement": "The system shall log every failed login attempt with timestamp, IP address, and username.",
+      "ground_truth": [],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The database shall support up to 10,000 concurrent connections.",
+      "ground_truth": [],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The system must be easy to maintain.",
+      "ground_truth": [
+        "vague"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "ENTAILMENT",
+          "score": 0.0667,
+          "matched_terms": [
+            "easy"
+          ]
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "Reports should look professional and be generated efficiently.",
+      "ground_truth": [
+        "vague"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "ENTAILMENT",
+          "score": 0.0667,
+          "matched_terms": [
+            "professional"
+          ]
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The application should work well on mobile devices.",
+      "ground_truth": [
+        "vague"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "ENTAILMENT",
+          "score": 0.0667,
+          "matched_terms": [
+            "well"
+          ]
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The system might allow administrators to override user permissions.",
+      "ground_truth": [
+        "optional"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.1667,
+          "matched_terms": [
+            "might"
+          ]
+        }
+      }
+    },
+    {
+      "requirement": "The backup process could run during off-peak hours.",
+      "ground_truth": [
+        "optional"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.1667,
+          "matched_terms": [
+            "could"
+          ]
+        }
+      }
+    },
+    {
+      "requirement": "The application shall display search results within 1 second for queries returning up to 500 records.",
+      "ground_truth": [],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "Each user session shall expire after 30 minutes of inactivity.",
+      "ground_truth": [],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The system should ensure adequate data protection.",
+      "ground_truth": [
+        "vague"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "ENTAILMENT",
+          "score": 0.0667,
+          "matched_terms": [
+            "adequate"
+          ]
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The software needs to be reliable.",
+      "ground_truth": [
+        "vague"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "ENTAILMENT",
+          "score": 0.0667,
+          "matched_terms": [
+            "reliable"
+          ]
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "Error messages should be clear and helpful to the user.",
+      "ground_truth": [
+        "vague"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "ENTAILMENT",
+          "score": 0.1333,
+          "matched_terms": [
+            "clear",
+            "helpful"
+          ]
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The system may provide an optional two-factor authentication mechanism.",
+      "ground_truth": [
+        "optional"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.1667,
+          "matched_terms": [
+            "may"
+          ]
+        }
+      }
+    },
+    {
+      "requirement": "The system shall reject any uploaded file exceeding 10 MB and return error code 413.",
+      "ground_truth": [],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The API shall use TLS 1.2 or higher for all external communications.",
+      "ground_truth": [],
+      "predictions": {
+        "vague": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    },
+    {
+      "requirement": "The notification module should deliver messages reasonably fast.",
+      "ground_truth": [
+        "vague"
+      ],
+      "predictions": {
+        "vague": {
+          "label": "ENTAILMENT",
+          "score": 0.0667,
+          "matched_terms": [
+            "fast"
+          ]
+        },
+        "optional": {
+          "label": "NEUTRAL",
+          "score": 0.0,
+          "matched_terms": []
+        }
+      }
+    }
+  ]
+}
