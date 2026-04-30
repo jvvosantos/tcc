@@ -24,20 +24,21 @@ THRESHOLDS = [0.3, 0.4, 0.5, 0.6, 0.7]
 
 
 def main():
+    defect_types = list(LABELS.defects.keys())
     dataset = io.load_dataset(DATASET_PATH)
     scored_items = inference.collect_zeroshot_scores(MODEL_NAME, dataset, LABELS)
 
     metrics_dict = metrics.evaluate_thresholds(
-        scored_items, labels.DEFECT_TYPES, THRESHOLDS
+        scored_items, defect_types, THRESHOLDS
     )
 
     metrics_path = os.path.join(OUTPUT_DIR, "threshold_metrics.json")
-    io.save_json(metrics_path, metrics_dict)
+    io.save_threshold_metrics(metrics_path, defect_types, metrics_dict)
     print(f"\nMetrics saved to {metrics_path}")
 
     summary_path = os.path.join(OUTPUT_DIR, "threshold_summary.txt")
     write_summary(
-        metrics_dict, labels.DEFECT_TYPES, THRESHOLDS,
+        metrics_dict, defect_types, THRESHOLDS,
         summary_path, MODEL_NAME, LABELS_NAME,
     )
     print(f"Summary saved to {summary_path}")

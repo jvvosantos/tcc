@@ -4,6 +4,9 @@ Reads ``threshold_metrics.json`` and reports:
   - best threshold per defect (by F1)
   - the macro-average P/R/F1 obtained by combining the best thresholds
 
+Defect types are discovered from the file itself (envelope ``defect_types``
+key, or inferred from the legacy top-level keys for older files).
+
 Usage
 -----
     python scripts/threshold_tuning/select_best_thresholds.py
@@ -17,7 +20,6 @@ ROOT_DIR = os.path.join(os.path.dirname(__file__), "..", "..")
 sys.path.insert(0, os.path.abspath(ROOT_DIR))
 
 from scripts.lib import io, metrics  # noqa: E402
-from scripts.lib.labels import DEFECT_TYPES  # noqa: E402
 
 DEFAULT_METRICS = os.path.join(
     ROOT_DIR, "results", "zeroshot", "threshold_tuning", "threshold_metrics.json"
@@ -31,14 +33,15 @@ def find_best_threshold(defect_metrics):
 
 def main():
     metrics_path = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_METRICS
-    all_metrics = io.load_results(metrics_path)
+    loaded = io.load_results(metrics_path)
+    defect_types, all_metrics = io.unwrap_threshold_metrics(loaded)
 
     print("PocketRE — Best Thresholds per Defect")
     print(f"Source: {metrics_path}")
     print("=" * 55)
 
     best = {}
-    for defect in DEFECT_TYPES:
+    for defect in defect_types:
         threshold_key, m = find_best_threshold(all_metrics[defect])
         best[defect] = m
 

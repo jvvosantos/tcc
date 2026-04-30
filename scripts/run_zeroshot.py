@@ -53,7 +53,7 @@ def main():
 
     dataset = io.load_dataset(DATASET_PATH)
     results = inference.run_zeroshot(args.model, dataset, label_set)
-    io.save_json(out_path, results)
+    io.save_results(out_path, list(label_set.defects.keys()), results)
     print(f"\nResults saved to {out_path}")
 
 

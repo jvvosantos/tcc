@@ -25,7 +25,7 @@ LABELS = labels.IMPROVED
 def main():
     dataset = io.load_dataset(DATASET_PATH)
     results = inference.run_zeroshot(MODEL_NAME, dataset, LABELS)
-    io.save_json(RESULTS_PATH, results)
+    io.save_results(RESULTS_PATH, list(LABELS.defects.keys()), results)
     print(f"\nResults saved to {RESULTS_PATH}")
 
 

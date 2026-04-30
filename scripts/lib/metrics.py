@@ -1,6 +1,12 @@
-"""Evaluation metrics and reporting helpers."""
+"""Evaluation metrics and reporting helpers.
 
-from .labels import DEFECT_TYPES
+The reporting helpers (``print_evaluation``, ``print_comparison``) accept
+result objects in either the new envelope format or the legacy list format
+and discover the defect names from the data itself — no need to keep a
+constant in sync with the experiment.
+"""
+
+from . import io as _io
 
 
 def _entailment_predicate(item, defect):
@@ -73,18 +79,24 @@ def evaluate_thresholds(scored_items, defect_types, thresholds):
     return out
 
 
-def print_evaluation(results, defect_types=None, *, header=None):
-    """Print per-defect P/R/F1 plus macro average. Returns the per-defect metrics."""
-    defect_types = defect_types or DEFECT_TYPES
+def print_evaluation(loaded, defect_types=None, *, header=None):
+    """Print per-defect P/R/F1 plus macro average. Returns the per-defect metrics.
+
+    ``loaded`` is what ``io.load_results`` returns (envelope dict or legacy
+    list). When ``defect_types`` is omitted it is taken from the loaded
+    object (or inferred from the items).
+    """
+    discovered, items = _io.unwrap_results(loaded)
+    defect_types = defect_types or discovered
 
     if header:
         print(header)
-        print(f"Loaded {len(results)} results.\n")
+        print(f"Loaded {len(items)} results.\n")
     print("=" * 50)
 
     all_metrics = {}
     for defect in defect_types:
-        m = compute_metrics(results, defect)
+        m = compute_metrics(items, defect)
         all_metrics[defect] = m
         print(f"Defect: {defect}")
         print(f"  Precision: {m['precision']}")
@@ -109,13 +121,25 @@ def fmt_diff(diff):
     return f"{sign}{diff:.4f}"
 
 
-def print_comparison(baseline, improved, defect_types=None,
+def print_comparison(baseline_loaded, improved_loaded, defect_types=None,
                      baseline_label="Baseline", improved_label="Improved"):
-    """Print a side-by-side comparison of two result sets."""
-    defect_types = defect_types or DEFECT_TYPES
+    """Print a side-by-side comparison of two result sets.
 
-    bm_per = {d: compute_metrics(baseline, d) for d in defect_types}
-    im_per = {d: compute_metrics(improved, d) for d in defect_types}
+    Both arguments are what ``io.load_results`` returns. Defect types are
+    discovered from the baseline by default; pass ``defect_types`` to
+    override (or to restrict the comparison to a subset).
+    """
+    bm_defects, bm_items = _io.unwrap_results(baseline_loaded)
+    im_defects, im_items = _io.unwrap_results(improved_loaded)
+
+    if defect_types is None:
+        defect_types = bm_defects or im_defects
+        if bm_defects and im_defects and set(bm_defects) != set(im_defects):
+            print(f"⚠ defect_types differ: baseline={bm_defects} improved={im_defects}; "
+                  f"comparing on baseline's set.")
+
+    bm_per = {d: compute_metrics(bm_items, d) for d in defect_types}
+    im_per = {d: compute_metrics(im_items, d) for d in defect_types}
 
     for defect in defect_types:
         bm, im = bm_per[defect], im_per[defect]

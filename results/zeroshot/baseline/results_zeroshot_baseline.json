@@ -1,6 +1,7 @@
 {
   "defect_types": [
-    "vague",
+    "ambiguous",
+    "non_measurable",
     "optional"
   ],
   "items": [
@@ -10,13 +11,17 @@
         "vague"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9783
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.6168
+        },
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.528
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.9479
+          "score": 0.0025
         }
       }
     },
@@ -26,13 +31,17 @@
         "vague"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9764
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.6534
         },
         "optional": {
           "label": "NEUTRAL",
-          "score": 0.9455
+          "score": 0.3294
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0063
         }
       }
     },
@@ -42,13 +51,17 @@
         "vague"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9686
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.7921
+        },
+        "ambiguous": {
           "label": "NEUTRAL",
-          "score": 0.8606
+          "score": 0.0657
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0004
         }
       }
     },
@@ -58,13 +71,17 @@
         "optional"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9731
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.8863
+        },
+        "ambiguous": {
           "label": "NEUTRAL",
-          "score": 0.9653
+          "score": 0.2431
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0005
         }
       }
     },
@@ -74,13 +91,17 @@
         "optional"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9653
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.8993
+        },
+        "ambiguous": {
           "label": "NEUTRAL",
-          "score": 0.9523
+          "score": 0.468
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0003
         }
       }
     },
@@ -90,13 +111,17 @@
         "optional"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9669
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.9915
+        },
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.5525
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.9531
+          "score": 0.0004
         }
       }
     },
@@ -104,13 +129,17 @@
       "requirement": "The system shall authenticate users via OAuth 2.0 before granting access to protected resources.",
       "ground_truth": [],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9625
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.65
+        },
+        "ambiguous": {
           "label": "NEUTRAL",
-          "score": 0.9429
+          "score": 0.3919
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0053
         }
       }
     },
@@ -118,13 +147,17 @@
       "requirement": "The API shall return a response within 200 milliseconds for 95% of requests under normal load.",
       "ground_truth": [],
       "predictions": {
-        "vague": {
+        "ambiguous": {
           "label": "NEUTRAL",
-          "score": 0.9547
+          "score": 0.4799
         },
         "optional": {
           "label": "NEUTRAL",
-          "score": 0.9437
+          "score": 0.426
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0045
         }
       }
     },
@@ -132,13 +165,17 @@
       "requirement": "The system shall encrypt all stored passwords using bcrypt with a minimum cost factor of 12.",
       "ground_truth": [],
       "predictions": {
-        "vague": {
+        "ambiguous": {
           "label": "NEUTRAL",
-          "score": 0.9338
+          "score": 0.475
         },
         "optional": {
           "label": "NEUTRAL",
-          "score": 0.9273
+          "score": 0.2956
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0005
         }
       }
     },
@@ -148,13 +185,17 @@
         "vague"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9527
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.8221
+        },
+        "ambiguous": {
           "label": "NEUTRAL",
-          "score": 0.9194
+          "score": 0.4694
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0026
         }
       }
     },
@@ -164,13 +205,17 @@
         "vague"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9528
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.6718
         },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.6671
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.965
+          "score": 0.0007
         }
       }
     },
@@ -180,13 +225,17 @@
         "vague"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9789
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.5319
+        },
+        "ambiguous": {
           "label": "NEUTRAL",
-          "score": 0.9207
+          "score": 0.4006
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0008
         }
       }
     },
@@ -196,13 +245,17 @@
         "optional"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9759
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.9994
+        },
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.5567
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.9885
+          "score": 0.0021
         }
       }
     },
@@ -212,13 +265,17 @@
         "optional"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9564
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.9788
+        },
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.5522
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.9153
+          "score": 0.0002
         }
       }
     },
@@ -226,13 +283,17 @@
       "requirement": "The system shall log every failed login attempt with timestamp, IP address, and username.",
       "ground_truth": [],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.8231
-        },
         "optional": {
           "label": "NEUTRAL",
-          "score": 0.9465
+          "score": 0.3374
+        },
+        "ambiguous": {
+          "label": "NEUTRAL",
+          "score": 0.267
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0002
         }
       }
     },
@@ -240,13 +301,17 @@
       "requirement": "The database shall support up to 10,000 concurrent connections.",
       "ground_truth": [],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9696
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.6469
         },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.5436
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.9421
+          "score": 0.001
         }
       }
     },
@@ -256,13 +321,17 @@
         "vague"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9622
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.8703
+        },
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.6292
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.9277
+          "score": 0.0051
         }
       }
     },
@@ -272,13 +341,17 @@
         "vague"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9387
-        },
         "optional": {
           "label": "NEUTRAL",
-          "score": 0.9078
+          "score": 0.3905
+        },
+        "ambiguous": {
+          "label": "NEUTRAL",
+          "score": 0.0444
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0005
         }
       }
     },
@@ -288,13 +361,17 @@
         "vague"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9706
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.7518
+        },
+        "ambiguous": {
           "label": "NEUTRAL",
-          "score": 0.9279
+          "score": 0.386
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0005
         }
       }
     },
@@ -304,13 +381,17 @@
         "optional"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9525
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.9808
+        },
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.8317
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.9323
+          "score": 0.0035
         }
       }
     },
@@ -320,13 +401,17 @@
         "optional"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9612
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.9907
+        },
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.6861
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.9217
+          "score": 0.0005
         }
       }
     },
@@ -334,13 +419,17 @@
       "requirement": "The application shall display search results within 1 second for queries returning up to 500 records.",
       "ground_truth": [],
       "predictions": {
-        "vague": {
+        "ambiguous": {
           "label": "NEUTRAL",
-          "score": 0.9568
+          "score": 0.4605
         },
         "optional": {
           "label": "NEUTRAL",
-          "score": 0.9327
+          "score": 0.378
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0036
         }
       }
     },
@@ -348,13 +437,17 @@
       "requirement": "Each user session shall expire after 30 minutes of inactivity.",
       "ground_truth": [],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9772
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.6348
+        },
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.5149
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.955
+          "score": 0.0032
         }
       }
     },
@@ -364,13 +457,17 @@
         "vague"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.963
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.8256
+        },
+        "ambiguous": {
           "label": "NEUTRAL",
-          "score": 0.9446
+          "score": 0.2635
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.001
         }
       }
     },
@@ -380,13 +477,17 @@
         "vague"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9675
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.8
+        },
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.5507
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.9487
+          "score": 0.0031
         }
       }
     },
@@ -396,13 +497,17 @@
         "vague"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.811
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.713
+        },
+        "ambiguous": {
           "label": "NEUTRAL",
-          "score": 0.8615
+          "score": 0.0501
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.002
         }
       }
     },
@@ -412,13 +517,17 @@
         "optional"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9688
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.9994
+        },
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.5171
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.9861
+          "score": 0.0026
         }
       }
     },
@@ -426,13 +535,17 @@
       "requirement": "The system shall reject any uploaded file exceeding 10 MB and return error code 413.",
       "ground_truth": [],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.9782
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.5931
+        },
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.5448
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.9574
+          "score": 0.003
         }
       }
     },
@@ -440,13 +553,17 @@
       "requirement": "The API shall use TLS 1.2 or higher for all external communications.",
       "ground_truth": [],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.8968
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.6998
+        },
+        "ambiguous": {
+          "label": "ENTAILMENT",
+          "score": 0.6452
+        },
+        "non_measurable": {
           "label": "NEUTRAL",
-          "score": 0.9594
+          "score": 0.0071
         }
       }
     },
@@ -456,13 +573,17 @@
         "vague"
       ],
       "predictions": {
-        "vague": {
-          "label": "NEUTRAL",
-          "score": 0.981
-        },
         "optional": {
+          "label": "ENTAILMENT",
+          "score": 0.6076
+        },
+        "ambiguous": {
           "label": "NEUTRAL",
-          "score": 0.9355
+          "score": 0.4511
+        },
+        "non_measurable": {
+          "label": "NEUTRAL",
+          "score": 0.0031
         }
       }
     }

@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath(ROOT_DIR))
 
 from scripts.lib import inference, io, labels  # noqa: E402
 
-DATASET_PATH = os.path.join(ROOT_DIR, "data", "dataset_v2.json")
+DATASET_PATH = os.path.join(ROOT_DIR, "data", "dataset.json")
 DEFAULT_MODEL = "roberta-large-mnli"
 
 
@@ -50,7 +50,7 @@ def main():
 
     dataset = io.load_dataset(DATASET_PATH)
     results = inference.run_nli(args.model, dataset, label_set)
-    io.save_json(out_path, results)
+    io.save_results(out_path, list(label_set.defects.keys()), results)
     print(f"\nResults saved to {out_path}")
 
 

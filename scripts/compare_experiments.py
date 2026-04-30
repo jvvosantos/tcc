@@ -36,9 +36,12 @@ def main():
     baseline = io.load_results(baseline_path)
     improved = io.load_results(improved_path)
 
+    _, bm_items = io.unwrap_results(baseline)
+    _, im_items = io.unwrap_results(improved)
+
     print(f"Baseline:  {os.path.basename(baseline_path)}")
     print(f"Improved:  {os.path.basename(improved_path)}")
-    print(f"Samples:   {len(baseline)} (baseline) / {len(improved)} (improved)")
+    print(f"Samples:   {len(bm_items)} (baseline) / {len(im_items)} (improved)")
     print()
 
     metrics.print_comparison(baseline, improved)

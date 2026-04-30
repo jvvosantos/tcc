@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath(ROOT_DIR))
 
 from scripts.lib import inference, io, labels, metrics  # noqa: E402
 
-DATASET_PATH = os.path.join(ROOT_DIR, "data", "dataset.json")
+DATASET_PATH = os.path.join(ROOT_DIR, "data", "dataset_v2.json")
 DEFAULT_MODEL = "facebook/bart-large-mnli"
 DEFAULT_THRESHOLDS = [0.3, 0.4, 0.5, 0.6, 0.7]
 
@@ -88,6 +88,7 @@ def main():
     args = parse_args()
 
     label_set = labels.get(args.labels)
+    defect_types = list(label_set.defects.keys())
     out_dir = args.out_dir or os.path.join(
         ROOT_DIR, "results", "zeroshot", f"threshold_tuning_{args.labels}"
     )
@@ -96,16 +97,16 @@ def main():
     scored_items = inference.collect_zeroshot_scores(args.model, dataset, label_set)
 
     metrics_dict = metrics.evaluate_thresholds(
-        scored_items, labels.DEFECT_TYPES, args.thresholds
+        scored_items, defect_types, args.thresholds
     )
 
     metrics_path = os.path.join(out_dir, "threshold_metrics.json")
-    io.save_json(metrics_path, metrics_dict)
+    io.save_threshold_metrics(metrics_path, defect_types, metrics_dict)
     print(f"\nMetrics saved to {metrics_path}")
 
     summary_path = os.path.join(out_dir, "threshold_summary.txt")
     write_summary(
-        metrics_dict, labels.DEFECT_TYPES, args.thresholds,
+        metrics_dict, defect_types, args.thresholds,
         summary_path, args.model, args.labels,
     )
     print(f"Summary saved to {summary_path}")

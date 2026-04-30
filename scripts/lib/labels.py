@@ -9,10 +9,15 @@ Each entry is a ``LabelSet`` bundling two things:
                    zero-shot predicts ENTAILMENT when the entailment
                    score is strictly above the defect's threshold.
 
+The defect names are defined per ``LabelSet`` (no global constant). The
+runners persist them in the result JSON under ``defect_types`` so that
+evaluation scripts pick them up automatically.
+
 How to test a new label variant
 -------------------------------
-1. Add a new ``LabelSet`` at the bottom of this file (one entry per defect
-   in ``DEFECT_TYPES``, both for ``defects`` and ``thresholds``).
+1. Add a new ``LabelSet`` at the bottom of this file with the defects you
+   want to detect (both ``defects`` and ``thresholds`` must use the same
+   keys).
 2. Register it in ``LABEL_SETS`` so it can be picked by name from the CLI.
 3. Run any of the generic runners pointing at it, e.g.::
 
@@ -24,9 +29,6 @@ Background: see @ai/MEMORY.md § "Defect hypotheses (label verbalization)".
 """
 
 from dataclasses import dataclass
-
-
-DEFECT_TYPES = ["ambiguous", "non_measurable", "optional"]
 
 
 @dataclass(frozen=True)
@@ -119,12 +121,33 @@ IMPROVED_V3 = LabelSet(
     },
 )
 
+IMPROVED_V4 = LabelSet(
+    defects={
+        "vague": (
+            "This requirement is vague ONLY if it explicitly contains subjective words such as "
+            "fast, quick, good, efficient, reliable, user-friendly, intuitive, adequate, or large. "
+            "If none of these words appear, it is not vague."
+        ),
+
+        "optional": (
+            "This requirement is optional ONLY if it explicitly contains terms such as "
+            "may, might, could, optionally, if necessary, or if appropriate. "
+            "The words must or shall indicate that it is NOT optional."
+        ),
+    },
+    thresholds={
+        "vague": 0.65,
+        "optional": 0.75,
+    },
+)
+
 
 LABEL_SETS = {
     "baseline": BASELINE,
     "improved": IMPROVED,
     "improved_v2": IMPROVED_V2,
     "improved_v3": IMPROVED_V3,
+    "improved_v4": IMPROVED_V4,
 }
 
 

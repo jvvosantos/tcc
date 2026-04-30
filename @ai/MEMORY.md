@@ -247,7 +247,36 @@ dataclass bundling two things:
        results/nli/concrete_v3/results_nli_concrete_v3.json
    ```
 
-No new Python files required.
+No new Python files required. There is **no global `DEFECT_TYPES` constant**:
+each result file stores its own list under the `defect_types` key, and
+`evaluate` / `compare_experiments` / `select_best_thresholds` discover it
+from the file (with a fallback that infers from `predictions` keys for
+older files).
+
+### Result file format
+
+Inference runners (NLI, zero-shot) write a self-describing envelope:
+
+```json
+{
+  "defect_types": ["vague", "optional"],
+  "items": [
+    {"requirement": "...", "ground_truth": [...], "predictions": {...}}
+  ]
+}
+```
+
+Threshold tuning writes:
+
+```json
+{
+  "defect_types": ["vague", "optional"],
+  "metrics": {"vague": {"0.3": {...}, "0.4": {...}}, "optional": {...}}
+}
+```
+
+See `scripts/lib/io.py` for `save_results`, `save_threshold_metrics`,
+`unwrap_results`, `unwrap_threshold_metrics`.
 
 ---
 
