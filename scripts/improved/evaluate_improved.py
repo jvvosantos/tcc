@@ -1,8 +1,8 @@
-"""PocketRE — Evaluate baseline NLI results (default).
+"""PocketRE — Evaluate improved NLI results (default).
 
 Equivalent to::
 
-    python scripts/evaluate.py results/nli/baseline/results_nli.json
+    python scripts/evaluate.py results/nli/improved_labels/results_nli_improved.json
 
 Pass a different path as a positional argument to evaluate other files.
 """
@@ -15,7 +15,9 @@ sys.path.insert(0, os.path.abspath(ROOT_DIR))
 
 from scripts.lib import io, metrics  # noqa: E402
 
-DEFAULT_RESULTS = os.path.join(ROOT_DIR, "results", "nli", "baseline", "results_nli.json")
+DEFAULT_RESULTS = os.path.join(
+    ROOT_DIR, "results", "nli", "improved_labels", "results_nli_improved.json"
+)
 
 
 def main():

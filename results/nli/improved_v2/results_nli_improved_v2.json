@@ -1,0 +1,596 @@
+[
+  {
+    "requirement": "The system should respond quickly to user inputs.",
+    "ground_truth": [
+      "ambiguous",
+      "non_measurable"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9577
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.9267
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9376
+      }
+    }
+  },
+  {
+    "requirement": "The application must handle a large number of users.",
+    "ground_truth": [
+      "ambiguous",
+      "non_measurable"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9783
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.9532
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9661
+      }
+    }
+  },
+  {
+    "requirement": "The interface should be user-friendly and intuitive.",
+    "ground_truth": [
+      "ambiguous",
+      "non_measurable"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9283
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.8726
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.8472
+      }
+    }
+  },
+  {
+    "requirement": "The system may send email notifications when an order is placed.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9648
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.878
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9704
+      }
+    }
+  },
+  {
+    "requirement": "The application could allow users to export data in CSV format.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9713
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.8217
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9661
+      }
+    }
+  },
+  {
+    "requirement": "Users might be able to customize their dashboard layout.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9556
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.803
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9601
+      }
+    }
+  },
+  {
+    "requirement": "The system shall authenticate users via OAuth 2.0 before granting access to protected resources.",
+    "ground_truth": [],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9523
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.7323
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9671
+      }
+    }
+  },
+  {
+    "requirement": "The API shall return a response within 200 milliseconds for 95% of requests under normal load.",
+    "ground_truth": [],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9445
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.8136
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.958
+      }
+    }
+  },
+  {
+    "requirement": "The system shall encrypt all stored passwords using bcrypt with a minimum cost factor of 12.",
+    "ground_truth": [],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9302
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.6712
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9423
+      }
+    }
+  },
+  {
+    "requirement": "The system should be secure.",
+    "ground_truth": [
+      "ambiguous",
+      "non_measurable"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9744
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.7729
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9204
+      }
+    }
+  },
+  {
+    "requirement": "The platform must provide good performance under stress.",
+    "ground_truth": [
+      "ambiguous",
+      "non_measurable"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9459
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.8461
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9715
+      }
+    }
+  },
+  {
+    "requirement": "Data should be processed in a timely manner.",
+    "ground_truth": [
+      "ambiguous",
+      "non_measurable"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9758
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.952
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.8965
+      }
+    }
+  },
+  {
+    "requirement": "The system may optionally support dark mode in the user interface.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9801
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.8828
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9899
+      }
+    }
+  },
+  {
+    "requirement": "Logging could be enabled for debugging purposes.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9565
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.7861
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9452
+      }
+    }
+  },
+  {
+    "requirement": "The system shall log every failed login attempt with timestamp, IP address, and username.",
+    "ground_truth": [],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.917
+      },
+      "non_measurable": {
+        "label": "CONTRADICTION",
+        "score": 0.566
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9661
+      }
+    }
+  },
+  {
+    "requirement": "The database shall support up to 10,000 concurrent connections.",
+    "ground_truth": [],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9755
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.9168
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9609
+      }
+    }
+  },
+  {
+    "requirement": "The system must be easy to maintain.",
+    "ground_truth": [
+      "ambiguous",
+      "non_measurable"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9788
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.8793
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9598
+      }
+    }
+  },
+  {
+    "requirement": "Reports should look professional and be generated efficiently.",
+    "ground_truth": [
+      "ambiguous",
+      "non_measurable"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9679
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.7938
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.8607
+      }
+    }
+  },
+  {
+    "requirement": "The application should work well on mobile devices.",
+    "ground_truth": [
+      "ambiguous",
+      "non_measurable"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9784
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.9251
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9149
+      }
+    }
+  },
+  {
+    "requirement": "The system might allow administrators to override user permissions.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9689
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.7385
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9557
+      }
+    }
+  },
+  {
+    "requirement": "The backup process could run during off-peak hours.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9604
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.867
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9458
+      }
+    }
+  },
+  {
+    "requirement": "The application shall display search results within 1 second for queries returning up to 500 records.",
+    "ground_truth": [],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9665
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.8341
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9447
+      }
+    }
+  },
+  {
+    "requirement": "Each user session shall expire after 30 minutes of inactivity.",
+    "ground_truth": [],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9747
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.8949
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9715
+      }
+    }
+  },
+  {
+    "requirement": "The system should ensure adequate data protection.",
+    "ground_truth": [
+      "ambiguous",
+      "non_measurable"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9744
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.8416
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9257
+      }
+    }
+  },
+  {
+    "requirement": "The software needs to be reliable.",
+    "ground_truth": [
+      "ambiguous",
+      "non_measurable"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9781
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.8663
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9637
+      }
+    }
+  },
+  {
+    "requirement": "Error messages should be clear and helpful to the user.",
+    "ground_truth": [
+      "ambiguous"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.7944
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.7135
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.8607
+      }
+    }
+  },
+  {
+    "requirement": "The system may provide an optional two-factor authentication mechanism.",
+    "ground_truth": [
+      "optional"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9808
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.9014
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9903
+      }
+    }
+  },
+  {
+    "requirement": "The system shall reject any uploaded file exceeding 10 MB and return error code 413.",
+    "ground_truth": [],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9697
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.9253
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.974
+      }
+    }
+  },
+  {
+    "requirement": "The API shall use TLS 1.2 or higher for all external communications.",
+    "ground_truth": [],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9443
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.8169
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9678
+      }
+    }
+  },
+  {
+    "requirement": "The notification module should deliver messages reasonably fast.",
+    "ground_truth": [
+      "ambiguous",
+      "non_measurable"
+    ],
+    "predictions": {
+      "ambiguous": {
+        "label": "NEUTRAL",
+        "score": 0.9782
+      },
+      "non_measurable": {
+        "label": "NEUTRAL",
+        "score": 0.9493
+      },
+      "optional": {
+        "label": "NEUTRAL",
+        "score": 0.9181
+      }
+    }
+  }
+]
