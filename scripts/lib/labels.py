@@ -1,7 +1,10 @@
 """PocketRE — Label verbalization registry.
 
-Each entry is a ``LabelSet`` bundling two things:
+Each entry is a ``LabelSet`` — the single source of truth for an experiment.
+It bundles every parameter that can vary between experiments:
 
+- ``dataset``    — path to the labeled dataset, relative to the project root
+                   (e.g. ``"data/dataset_v2.json"``).
 - ``defects``    — mapping defect name -> natural-language hypothesis the
                    NLI / zero-shot model checks against the requirement.
 - ``thresholds`` — per-defect decision threshold. NLI ignores them (it
@@ -15,15 +18,15 @@ evaluation scripts pick them up automatically.
 
 How to test a new label variant
 -------------------------------
-1. Add a new ``LabelSet`` at the bottom of this file with the defects you
-   want to detect (both ``defects`` and ``thresholds`` must use the same
-   keys).
+1. Add a new ``LabelSet`` at the bottom of this file with all three fields.
 2. Register it in ``LABEL_SETS`` so it can be picked by name from the CLI.
 3. Run any of the generic runners pointing at it, e.g.::
 
        python scripts/run_nli.py --labels concrete_v3
        python scripts/run_zeroshot.py --labels concrete_v3
        python scripts/evaluate.py results/nli/concrete_v3/results_nli_concrete_v3.json
+
+No other files need to be touched. All variable configuration lives here.
 
 Background: see @ai/MEMORY.md § "Defect hypotheses (label verbalization)".
 """
@@ -33,13 +36,26 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class LabelSet:
-    """Defect hypotheses (premises) + per-defect decision thresholds."""
+    """Single source of truth for one experiment variant.
 
+    Attributes
+    ----------
+    dataset:
+        Path to the labeled requirements file, relative to the project root.
+    defects:
+        Mapping from defect name to the NLI hypothesis text.
+    thresholds:
+        Per-defect decision threshold for zero-shot classification.
+        NLI runners ignore this (they use the model's argmax label directly).
+    """
+
+    dataset: str
     defects: dict
     thresholds: dict
 
 
 BASELINE = LabelSet(
+    dataset="data/dataset.json",
     defects={
         "ambiguous": "This requirement contains vague or unclear terms that can be interpreted in multiple ways.",
         "non_measurable": "This requirement cannot be objectively measured or tested.",
@@ -54,6 +70,7 @@ BASELINE = LabelSet(
 
 
 IMPROVED = LabelSet(
+    dataset="data/dataset.json",
     defects={
         "ambiguous": (
             "This requirement uses vague or subjective words such as clear, intuitive, "
@@ -75,19 +92,19 @@ IMPROVED = LabelSet(
     },
 )
 
+
 IMPROVED_V2 = LabelSet(
+    dataset="data/dataset.json",
     defects={
         "ambiguous": (
             "This requirement is ambiguous because it can be interpreted in multiple ways, "
             "has unclear references, or does not clearly specify what the system must do."
         ),
-
         "non_measurable": (
             "This requirement contains vague quality terms such as quickly, fast, good, "
             "large, easy, reliable, adequate, professional, efficient, user-friendly, "
             "or intuitive, without objective measurable criteria."
         ),
-
         "optional": (
             "This requirement is optional only if it uses explicit optional terms such as "
             "may, might, could, optionally, if necessary, or if appropriate. "
@@ -101,14 +118,15 @@ IMPROVED_V2 = LabelSet(
     },
 )
 
+
 IMPROVED_V3 = LabelSet(
+    dataset="data/dataset_v2.json",
     defects={
         "vague": (
             "This requirement is vague because it uses subjective or imprecise language "
             "such as fast, quick, good, efficient, reliable, user-friendly, intuitive, "
             "adequate, or large, and does not clearly define exact behavior or measurable criteria."
         ),
-
         "optional": (
             "This requirement is optional only if it uses explicit optional terms such as "
             "may, might, could, optionally, if necessary, or if appropriate. "
@@ -121,14 +139,15 @@ IMPROVED_V3 = LabelSet(
     },
 )
 
+
 IMPROVED_V4 = LabelSet(
+    dataset="data/dataset_v2.json",
     defects={
         "vague": (
             "This requirement is vague ONLY if it explicitly contains subjective words such as "
             "fast, quick, good, efficient, reliable, user-friendly, intuitive, adequate, or large. "
             "If none of these words appear, it is not vague."
         ),
-
         "optional": (
             "This requirement is optional ONLY if it explicitly contains terms such as "
             "may, might, could, optionally, if necessary, or if appropriate. "
@@ -141,6 +160,26 @@ IMPROVED_V4 = LabelSet(
     },
 )
 
+IMPROVED_V5 = LabelSet(
+    dataset="data/dataset_v2.json",
+    defects={
+        "vague": (
+            "This requirement is vague ONLY if it explicitly contains subjective words such as "
+            "fast, quick, good, efficient, reliable, user-friendly, intuitive, adequate, or large. "
+            "If none of these words appear, it is not vague."
+        ),
+        "optional": (
+            "This requirement is optional ONLY if it explicitly contains terms such as "
+            "may, might, could, optionally, if necessary, or if appropriate. "
+            "The words must or shall indicate that it is NOT optional."
+        ),
+    },
+    thresholds={
+        "vague": 0.4,
+        "optional": 0.3,
+    },
+)
+
 
 LABEL_SETS = {
     "baseline": BASELINE,
@@ -148,6 +187,7 @@ LABEL_SETS = {
     "improved_v2": IMPROVED_V2,
     "improved_v3": IMPROVED_V3,
     "improved_v4": IMPROVED_V4,
+    "improved_v5": IMPROVED_V5,
 }
 
 

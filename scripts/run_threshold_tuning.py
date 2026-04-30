@@ -22,7 +22,6 @@ sys.path.insert(0, os.path.abspath(ROOT_DIR))
 
 from scripts.lib import inference, io, labels, metrics  # noqa: E402
 
-DATASET_PATH = os.path.join(ROOT_DIR, "data", "dataset_v2.json")
 DEFAULT_MODEL = "facebook/bart-large-mnli"
 DEFAULT_THRESHOLDS = [0.3, 0.4, 0.5, 0.6, 0.7]
 
@@ -93,7 +92,7 @@ def main():
         ROOT_DIR, "results", "zeroshot", f"threshold_tuning_{args.labels}"
     )
 
-    dataset = io.load_dataset(DATASET_PATH)
+    dataset = io.load_dataset(os.path.join(ROOT_DIR, label_set.dataset))
     scored_items = inference.collect_zeroshot_scores(args.model, dataset, label_set)
 
     metrics_dict = metrics.evaluate_thresholds(

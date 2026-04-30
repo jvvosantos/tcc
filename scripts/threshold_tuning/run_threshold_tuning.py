@@ -14,7 +14,6 @@ sys.path.insert(0, os.path.abspath(ROOT_DIR))
 from scripts.lib import inference, io, labels, metrics  # noqa: E402
 from scripts.run_threshold_tuning import write_summary  # noqa: E402
 
-DATASET_PATH = os.path.join(ROOT_DIR, "data", "dataset.json")
 OUTPUT_DIR = os.path.join(ROOT_DIR, "results", "zeroshot", "threshold_tuning")
 
 MODEL_NAME = "facebook/bart-large-mnli"
@@ -25,7 +24,7 @@ THRESHOLDS = [0.3, 0.4, 0.5, 0.6, 0.7]
 
 def main():
     defect_types = list(LABELS.defects.keys())
-    dataset = io.load_dataset(DATASET_PATH)
+    dataset = io.load_dataset(os.path.join(ROOT_DIR, LABELS.dataset))
     scored_items = inference.collect_zeroshot_scores(MODEL_NAME, dataset, LABELS)
 
     metrics_dict = metrics.evaluate_thresholds(

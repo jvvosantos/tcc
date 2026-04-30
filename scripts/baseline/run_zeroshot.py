@@ -13,7 +13,6 @@ sys.path.insert(0, os.path.abspath(ROOT_DIR))
 
 from scripts.lib import inference, io, labels  # noqa: E402
 
-DATASET_PATH = os.path.join(ROOT_DIR, "data", "dataset.json")
 RESULTS_PATH = os.path.join(ROOT_DIR, "results", "zeroshot", "baseline", "results_zeroshot.json")
 
 MODEL_NAME = "facebook/bart-large-mnli"
@@ -21,7 +20,7 @@ LABELS = labels.BASELINE
 
 
 def main():
-    dataset = io.load_dataset(DATASET_PATH)
+    dataset = io.load_dataset(os.path.join(ROOT_DIR, LABELS.dataset))
     results = inference.run_zeroshot(MODEL_NAME, dataset, LABELS)
     io.save_results(RESULTS_PATH, list(LABELS.defects.keys()), results)
     print(f"\nResults saved to {RESULTS_PATH}")

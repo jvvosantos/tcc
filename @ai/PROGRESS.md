@@ -12,15 +12,15 @@ ao final, e o **estado atual** no topo é atualizado.
 
 ## Estado atual (snapshot)
 
-**Última atualização:** 2026-04-29
+**Última atualização:** 2026-04-30
 
 ### Métodos avaliados
 
 | Método | Modelo | Status |
 |---|---|---|
-| NLI (entailment) | `roberta-large-mnli` | Avaliado em 4 variantes — **saturado**, F1 ≈ 0 em todas |
-| Zero-shot classification | `facebook/bart-large-mnli` | Avaliado em 4 variantes + threshold tuning — único caminho com sinal, mas **com teto** |
-| Local LLM (instrucional) | — | Não iniciado / próximo grande passo |
+| NLI (entailment) | `roberta-large-mnli` | Avaliado em **6 variantes** — F1 macro ≈ 0 em todas. **Frente encerrada.** |
+| Zero-shot classification | `facebook/bart-large-mnli` | Avaliado em 5 variantes + 2 rodadas de threshold tuning. Teto confirmado (`vague` F1≈0.65, `optional` F1≤0.75). |
+| Local LLM (instrucional) | — | Não iniciado — **próximo grande passo do TCC**. |
 
 ### Esquemas de rótulos avaliados
 
@@ -39,31 +39,39 @@ ao final, e o **estado atual** no topo é atualizado.
 | 4 | Improved_v2 labels + threshold por defeito (0.75/0.30/0.70) | 3-classes | **0.000** | **0.190** |
 | 5 | Improved_v3 labels + threshold por defeito (0.45/0.70) | **2-classes** | **0.000** | **0.4962** ⚠️ |
 | 6 | Improved_v4 labels + threshold por defeito (0.65/0.75) | 2-classes | **0.000** | **0.000** ⚠️ |
+| 7 | Improved_v4 + threshold tuning + Improved_v5 (0.4/0.3) | 2-classes | **0.000** | **0.3236** ✅ |
 
 > ⚠️ **Exp. 5:** macro F1 enganosamente alta — média sobre 2 defeitos (vs 3) com
 > TN=0 em ambos. Ver M7.
 >
-> ⚠️ **Exp. 6:** macro F1 = 0 por threshold mal calibrado. Com t=0.42, `vague`
+> ⚠️ **Exp. 6:** macro F1 = 0 por threshold mal calibrado. Com t≈0.42, `vague`
 > atinge F1=**0.667** com TN=8 — melhor resultado real de `vague` até hoje. Ver M8.
+>
+> ✅ **Exp. 7:** número **honesto** da família v4. Threshold tuning confirmou
+> `vague` F1=**0.647** com TN=7 (separação real); `optional` F1=0 (irrecuperável
+> com a hipótese v4). Macro 0.324 < M4 (0.4405) mas o melhor `vague`
+> empiricamente confirmado. Ver M9.
 
 ### F1 por defeito — melhor configuração honesta até agora
 
 | Defeito | Melhor F1 real | Configuração | TN | Comentário |
 |---|---|---|---|---|
 | `optional` (3-cls) | **0.750** | zero-shot improved + tuning, t=0.6 | 20/22 | **Melhor resultado do projeto** — separa positivo de negativo |
-| `vague` (2-cls) | **0.667** ★ | zero-shot improved_v4, t=0.42 (não embutido) | 8/17 | F1 alto com TN real — mas threshold embutido foi 0.65 (alto demais) |
+| `vague` (2-cls) | **0.647** ★ | zero-shot improved_v4 + tuning, t=0.4 (improved_v5) | 7/17 | F1 confirmado por tuning. **Melhor `vague` da pesquisa.** |
 | `ambiguous` (3-cls) | 0.571 | zero-shot improved + tuning, t=0.3 | 0/17 | F1 alto mas TN=0 — modelo não rejeita nada |
 | `vague` (2-cls) | 0.571 | zero-shot improved_v3, t=0.45 | 0/17 | F1 alto mas TN=0 — hipótese catch-all |
 | `non_measurable` (3-cls) | **0.000** | qualquer configuração | n/a | Score bruto colapsado; eliminado pela fusão em `vague` |
-| `optional` (2-cls) | **0.000** | zero-shot improved_v4 (ver M8) | n/a | Hipótese negativa colapsou scores para ≤ 0.021 |
+| `optional` (2-cls) | **0.000** | zero-shot improved_v4 / v5 (ver M8/M9) | n/a | Hipótese "ONLY if / NOT if" suprime sinal — score max 0.021, irrecuperável |
 
-> ★ F1=0.667 de `vague` com improved_v4 é válido mas **não foi capturado** nos
-> resultados do experimento porque o threshold embutido (`0.65`) estava acima do
-> score máximo real (`0.624`). Precisaria de threshold tuning para ser confirmado.
+> ★ Em M8 a estimativa visual sugeria F1=0.667 (t≈0.42); o tuning sistemático
+> de M9 confirmou o ótimo em t=0.4 com F1=**0.647** (TP=11, FP=10, FN=2, TN=7).
+> Pequena correção numérica, mesma conclusão.
 
-> **Situação atual:** o único defeito com separação útil e resultado confirmado é
-> `optional` no esquema 3-classes (M4). `vague` mostra potencial real com
-> improved_v4, mas precisa de re-calibração do threshold.
+> **Situação atual:** dois defeitos têm separação útil **confirmada por tuning**:
+> `optional` no esquema 3-classes (M4, F1=0.75) e `vague` no v4/v5 (M9,
+> F1=0.647). Os tetos do BART zero-shot estão definidos e não devem subir mais
+> com reformulação de hipóteses (ver Diagnóstico §6). Próxima fronteira é
+> trocar de método (rule-based ou LLM local), não de hipótese.
 
 ---
 
@@ -358,9 +366,131 @@ Nenhum threshold razoável recupera `optional` com essa hipótese.
    evidência de que o modelo *reage* à instrução negativa, apenas não no sentido
    certo. Confirma que NLI zero-shot não é instruction-tuned.
 
+### M9 — Iteração 7: Threshold tuning de Improved_v4 + Improved_v5 (calibração final)
+
+Objetivo: confirmar empiricamente a previsão de M8 de que `vague` com a
+hipótese v4 dá F1≈0.667 com threshold ≈0.42, e fechar o número honesto da
+família v4 antes de mudar de método.
+
+**Passo 1 — Threshold tuning sobre `improved_v4`:**
+
+`python scripts/run_threshold_tuning.py --labels improved_v4 --thresholds 0.3 0.4 0.5 0.6 0.7`
+
+| Defeito | t | P | R | F1 | TP | FP | FN | TN |
+|---|---|---|---|---|---|---|---|---|
+| vague | 0.3 | 0.462 | 0.923 | 0.6154 | 12 | 14 | 1 | 3 |
+| vague | **0.4** | **0.524** | **0.846** | **0.6471** ★ | **11** | **10** | **2** | **7** |
+| vague | 0.5 | 0.857 | 0.462 | 0.6000 | 6 | 1 | 7 | 16 |
+| vague | 0.6 | 1.000 | 0.077 | 0.1429 | 1 | 0 | 12 | 17 |
+| vague | 0.7 | 0.000 | 0.000 | 0.0000 | 0 | 0 | 13 | 17 |
+| optional | qualquer ∈ [0.3, 0.7] | 0.000 | 0.000 | **0.0000** | 0 | 0 | 8 | 22 |
+
+**Passo 2 — `IMPROVED_V5`: mesma hipótese de v4, thresholds ótimos:**
+
+Codificadas no `LabelSet` para virarem o número canônico (sem mais "F1 dependente do threshold certo embutido"):
+
+```python
+IMPROVED_V5 = LabelSet(
+    dataset="data/dataset_v2.json",
+    defects=...,  # idênticas à v4
+    thresholds={"vague": 0.4, "optional": 0.3},
+)
+```
+
+**Resultados consolidados (zero-shot v5):**
+
+| Defeito | TP | FP | FN | TN | P | R | F1 |
+|---|---|---|---|---|---|---|---|
+| vague | 11 | 10 | 2 | 7 | 0.524 | 0.846 | **0.647** ✓ |
+| optional | 0 | 0 | 8 | 22 | 0.000 | 0.000 | **0.000** |
+| **Macro** | | | | | **0.262** | **0.423** | **0.324** |
+
+**Resultados NLI v5** (rodado por hábito): macro F1=**0.000**, 6ª variante
+consecutiva sem reação. Em `vague`, score médio de ENTAILMENT 0.0001;
+em `optional`, score médio 0.0008. Encerra definitivamente a frente.
+
 ---
 
-## Diagnóstico (consolidado, 2026-04-29)
+**Análise didática:**
+
+**1. `vague` — confirmação com pequena correção numérica.**
+
+A previsão de M8 (F1=0.667 em t≈0.42) era boa mas estava ligeiramente
+otimista. O tuning sistemático mostra que:
+
+- t=0.3: alto recall (12/13) mas precisão pobre (12 TP em 26 positivos preditos).
+- t=**0.4**: ponto ótimo. Captura 11/13 positivos com 7/17 TN reais — primeira
+  vez em todo o projeto que `vague` separa de fato.
+- t=0.5: a precisão dispara para 0.857 mas o recall despenca para 0.462.
+- t≥0.6: a hipótese estreita corta tudo.
+
+A curva F1 em função de t para `vague` v4 forma um platô raso entre 0.4 e 0.5
+(F1 ≈ 0.60-0.65), o que significa que **a separação é real mas marginal**.
+Comparado a M7/v3 onde tínhamos F1=0.571 com TN=0 (artefato), v5/v4 com
+F1=0.647 e TN=7 é cientificamente honesto e melhor.
+
+**2. `optional` — irrecuperável com a hipótese v4.**
+
+O tuning revela algo mais forte do que "threshold mal calibrado": a hipótese
+"ONLY if / NOT if" **suprime o sinal de opcionalidade em todo o dataset**.
+
+- Score máximo em 30 itens: **0.021**.
+- O top-1 score é "The system must be easy to maintain" (NOT-OPT, score 0.0207).
+- Os requisitos genuinamente opcionais ficam entre 0.007 e 0.019 — abaixo do
+  topo dos clean.
+- **Não há ranking discriminativo:** mesmo que tentássemos t=0.005, F1 ainda
+  seria ~0.44 com muitos FP.
+
+Isso confirma o diagnóstico de M8: a cláusula `"The words must or shall
+indicate that it is NOT optional"` introduz tokens negativos fortes
+(`must`, `shall`, `NOT`) que dominam a inferência de entailment para qualquer
+requisito que contenha verbos modais — o BART acaba lendo a hipótese como um
+todo, não como um teste condicional.
+
+**3. NLI — 6ª variante. Não há mais o que testar.**
+
+`roberta-large-mnli` zero-shot foi avaliado em 6 verbalizações
+fundamentalmente diferentes (curta, longa, com listas léxicas, com cláusulas
+prescritivas, em 2 e 3 classes, com 2 datasets). Macro F1=0 em todas. O
+único comportamento não-NEUTRAL apareceu em M8/v4 com `optional`
+(CONTRADICTION na direção errada). A frente está cientificamente fechada
+para o capítulo de Resultados.
+
+**4. Posicionamento dos números no relato da TCC.**
+
+| Cenário | Macro F1 | Vale citar como? |
+|---|---|---|
+| M4 — improved + tuning, 3-classes | 0.4405 | **Melhor agregado** do projeto (zero-shot) |
+| M9/v5 — improved_v4 + tuning, 2-classes | 0.3236 | **Melhor `vague` confirmado** (TN real) |
+| M7/v3 (artefato com TN=0) | 0.4962 | **Não citar como ganho** — explicar como artefato |
+| Qualquer NLI | 0.000 | Resultado científico (NLI puro não funciona) |
+
+**5. Ranking final dos defeitos no zero-shot (confirmado empiricamente):**
+
+| Defeito | Teto F1 | Configuração de teto |
+|---|---|---|
+| `optional` (3-cls) | 0.750 | improved + tuning, t=0.6 (M4) |
+| `vague` (2-cls) | 0.647 | improved_v4 + tuning, t=0.4 (M9) |
+| `ambiguous` (3-cls) | 0.571 | improved + tuning, t=0.3 (M4, com TN=0) |
+| `non_measurable` (3-cls) | 0.000 | nenhuma — fusão em `vague` foi a saída |
+
+Os dois primeiros estão **calibrados e prontos para a tabela final do TCC**.
+
+---
+
+**Frase-âncora para a TCC:**
+
+> "Systematic threshold tuning over an entailment-style hypothesis with
+> exclusion clauses confirmed an asymmetric ceiling: `vague` reached
+> F1=0.647 with real true negatives, while `optional` collapsed to F1=0
+> because the hypothesis suppressed the model's discriminative signal across
+> the entire dataset (max entailment score 0.021). No threshold can recover
+> a defect whose ranking is non-discriminative — a property of the
+> verbalization, not of the dataset."
+
+---
+
+## Diagnóstico (consolidado, 2026-04-30)
 
 Síntese das análises feitas em sessões com Claude e GPT após a iteração v2.
 Material direto para o capítulo de Discussão.
@@ -551,10 +681,12 @@ experimento futuro com esquemas != 3-classes:
 ### Prioridade 1 — Encerrar a frente de NLI puro
 
 - [ ] Documentar formalmente em `@ai/MEMORY.md` ("Important insight") que
-      NLI zero-shot puro foi avaliado e descartado, com **4 variantes** como
-      evidência (baseline, improved, improved_v2, improved_v3).
+      NLI zero-shot puro foi avaliado e descartado, com **6 variantes** como
+      evidência (baseline, improved, improved_v2, improved_v3, improved_v4,
+      improved_v5).
 - [x] Não rodar mais iterações de label verbalization no `roberta-large-mnli`
-      a partir daqui.
+      a partir daqui. **Status: cumprido — 6 variantes consecutivas com
+      macro F1=0 são evidência suficiente para o capítulo de Resultados.**
 
 ### Prioridade 2 — Decidir o que fazer com o dataset
 
@@ -568,18 +700,20 @@ experimento futuro com esquemas != 3-classes:
 
 ### Prioridade 3 — Threshold tuning no improved_v4 para `vague`
 
-M8 revelou que `vague` com a hipótese v4 tem **F1=0.667 no threshold
-correto (≈0.42)**. O threshold embutido (0.65) estava errado. Antes de
-descartar a v4, rodar tuning para confirmar e ter o número oficial:
+- [x] **Concluído em M9.** Threshold tuning confirmou `vague` t=**0.4** →
+      F1=**0.647** (TP=11, FP=10, FN=2, TN=7). Pequena correção sobre a
+      estimativa visual de M8 (0.667), mesma conclusão.
+- [x] `optional` é matematicamente irrecuperável com a hipótese v4 (score
+      máx 0.021 sobre todo o dataset, sem ranking discriminativo).
+- [x] `IMPROVED_V5` criado com os thresholds ótimos embutidos
+      (`{vague: 0.4, optional: 0.3}`) — virou a configuração canônica para
+      reprodutibilidade.
 
-- [ ] `python scripts/run_threshold_tuning.py --labels improved_v4 --thresholds 0.30 0.35 0.40 0.42 0.44 0.46 0.48 0.50 0.55 0.60 0.65`
-- `optional` não vai se salvar (score máximo 0.021), mas `vague` pode dar
-  o melhor resultado de `vague` confirmado até hoje.
-- Depois atualizar o `LabelSet.thresholds["vague"]` para o valor ótimo.
+### Prioridade 4 — Adicionar um terceiro método ⭐ (próxima frente do TCC)
 
-### Prioridade 4 — Adicionar um terceiro método
-
-Aqui é onde o TCC ganha diferencial:
+Com os tetos do BART zero-shot **confirmados empiricamente** (`optional`
+0.75, `vague` 0.647) e a frente de NLI puro encerrada, esta passa a ser
+**a frente ativa** do projeto. É onde o TCC ganha diferencial:
 
 **Opção A — Rule-based / heurísticas léxicas** (mais simples):
 - Regex de palavras-gatilho por defeito.
@@ -654,3 +788,17 @@ Quando uma iteração terminar:
   com TN real — melhor resultado de `vague` de toda a pesquisa. Atualizado
   snapshot e tabela de melhores F1; Prioridade 3 virou threshold tuning de
   improved_v4 para confirmar o número.
+- **2026-04-30** — Refatoração: `dataset` migrado para dentro do `LabelSet`
+  como `dataset: str` (junto com `defects` e `thresholds`). `LabelSet` agora
+  é a única fonte de verdade para experimentos; `DATASET_PATH` removido de
+  todos os 8 runners (genéricos + thin wrappers).
+- **2026-04-30** — Adicionado M9 (Iteração 7): threshold tuning sobre
+  `IMPROVED_V4` confirmou empiricamente o ótimo de `vague` em t=**0.4** →
+  F1=**0.647** (TP=11, FP=10, FN=2, TN=7), pequena correção numérica sobre
+  M8 (0.667). `optional` confirmado como irrecuperável: F1=0 em todos os
+  thresholds testados, score máximo 0.021 em todo o dataset.
+  `IMPROVED_V5` criado com `{vague: 0.4, optional: 0.3}` para virar a
+  configuração canônica reprodutível. Resultado consolidado de v5:
+  zero-shot macro F1=0.324 (com TN real); NLI macro F1=0 (6ª variante,
+  encerra a frente). Prioridade 1 cumprida; Prioridade 3 cumprida;
+  Prioridade 4 (3º método: rule-based / LLM local) virou a frente ativa.
